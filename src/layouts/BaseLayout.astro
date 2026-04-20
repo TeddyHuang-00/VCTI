@@ -39,6 +39,11 @@ const ogImageUrl = new URL(normalizedOgImagePath, siteWithBase).toString();
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
     <link rel="canonical" href={canonicalUrl} />
+    <link rel="icon" type="image/x-icon" href={`${basePath}favicon.ico`} />
+    <link rel="icon" type="image/png" sizes="16x16" href={`${basePath}favicon-16x16.png`} />
+    <link rel="icon" type="image/png" sizes="32x32" href={`${basePath}favicon-32x32.png`} />
+    <link rel="apple-touch-icon" sizes="180x180" href={`${basePath}apple-touch-icon.png`} />
+    <link rel="manifest" href={`${basePath}site.webmanifest`} />
     <link rel="preload" href={`${basePath}fonts/LXGWNeoXiHei-Regular.ttf`} as="font" type="font/ttf" crossorigin />
     <title>{title}</title>
   </head>
