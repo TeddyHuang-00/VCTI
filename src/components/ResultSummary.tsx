@@ -1,0 +1,232 @@
+import { dimensions, MAX_REACHABLE_POSTERIOR } from "@/domain/vcti";
+import type { AssessmentResult, DimensionId } from "@/domain/vcti/types";
+
+const UNCERTAINTY_SPREAD = 0.35;
+const BAR_SIDE_PADDING_PX = 3;
+const BAR_SOLID_HEIGHT_PX = 10;
+const BAR_UNCERTAINTY_HEIGHT_PX = 8;
+const dimensionColors: Record<
+  DimensionId,
+  { left: [number, number, number]; right: [number, number, number] }
+> = {
+  MA: { left: [196, 74, 58], right: [37, 129, 196] },
+  DV: { left: [78, 121, 167], right: [211, 124, 49] },
+  RJ: { left: [60, 153, 119], right: [176, 86, 147] },
+  CP: { left: [116, 94, 196], right: [176, 142, 62] },
+};
+
+function toPercent(value: number) {
+  return Math.round(value * 100);
+}
+
+function clamp(value: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, value));
+}
+
+function toBarPosition(posterior: number) {
+  const purity = Math.abs(posterior) / MAX_REACHABLE_POSTERIOR;
+  return purity * 50;
+}
+
+function buildBarStyle(leaning: "left" | "right", start: number, span: number, radiusPx: number) {
+  if (leaning === "left") {
+    return {
+      left: `${50 - start - span}%`,
+      width: `calc(${span}% + ${radiusPx}px)`,
+    };
+  }
+
+  return {
+    left: `calc(${50 + start}% - ${radiusPx}px)`,
+    width: `calc(${span}% + ${radiusPx}px)`,
+  };
+}
+
+function toneColor(dimensionId: DimensionId, leaning: "left" | "right", purity: number, alpha = 1) {
+  const palette = dimensionColors[dimensionId][leaning];
+  const saturation = 0.32 + purity * 0.68;
+  const [r, g, b] = palette.map((channel) => Math.round(255 - (255 - channel) * saturation));
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+function DimensionBar({
+  dimensionId,
+  posterior,
+  purity,
+  leaning,
+}: {
+  dimensionId: DimensionId;
+  posterior: number;
+  purity: number;
+  leaning: "left" | "right";
+}) {
+  const position = toBarPosition(posterior);
+  const uncertaintyMin = clamp(
+    Math.abs(posterior - UNCERTAINTY_SPREAD) / MAX_REACHABLE_POSTERIOR,
+    0,
+    1
+  );
+  const uncertaintyMax = clamp(
+    Math.abs(posterior + UNCERTAINTY_SPREAD) / MAX_REACHABLE_POSTERIOR,
+    0,
+    1
+  );
+  const uncertaintyStart = Math.min(uncertaintyMin, uncertaintyMax) * 50;
+  const uncertaintyEnd = Math.max(uncertaintyMin, uncertaintyMax) * 50;
+  const solidStyle = buildBarStyle(leaning, 0, position, BAR_SOLID_HEIGHT_PX / 2);
+  const uncertaintyStyle = buildBarStyle(
+    leaning,
+    uncertaintyStart,
+    uncertaintyEnd - uncertaintyStart,
+    BAR_UNCERTAINTY_HEIGHT_PX / 2
+  );
+
+  return (
+    <div className="mt-4">
+      <div className="relative h-4 rounded-full bg-[#f3f1ee] shadow-[rgba(0,0,0,0.05)_0px_0px_0px_1px_inset]">
+        <div
+          className="absolute inset-y-0"
+          style={{
+            left: `${BAR_SIDE_PADDING_PX}px`,
+            right: `${BAR_SIDE_PADDING_PX}px`,
+          }}
+        >
+          <div className="absolute top-0 left-1/2 w-px h-full -translate-x-1/2 bg-[#c9c4be]" />
+          <div
+            className="absolute top-1/2 rounded-full -translate-y-1/2"
+            style={{
+              ...uncertaintyStyle,
+              height: `${BAR_UNCERTAINTY_HEIGHT_PX}px`,
+              background: toneColor(dimensionId, leaning, purity, 0.26),
+            }}
+          />
+          <div
+            className="absolute top-1/2 rounded-full -translate-y-1/2"
+            style={{
+              ...solidStyle,
+              height: `${BAR_SOLID_HEIGHT_PX}px`,
+              background: toneColor(dimensionId, leaning, purity),
+            }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function ResultSummary({
+  result,
+  basePath = "/",
+  captureId,
+}: {
+  result: AssessmentResult;
+  basePath?: string;
+  captureId?: string;
+}) {
+  return (
+    <section id={captureId} className="grid gap-8">
+      <div className="p-6 bg-white sm:p-8 rounded-[24px] shadow-[rgba(0,0,0,0.06)_0px_0px_0px_1px,rgba(0,0,0,0.04)_0px_4px_4px]">
+        <div className="grid gap-8 xl:grid-cols-[0.78fr_1.22fr]">
+          <div className="space-y-5">
+            <div className="overflow-hidden mx-auto w-full aspect-square max-w-[240px]">
+              <img
+                src={`${basePath}archetypes/${result.profile.imageName}`}
+                alt={result.profile.chineseName}
+                className="object-contain w-full h-full"
+              />
+            </div>
+            <div>
+              <h1 className="font-light text-black font-display text-[2.8rem] leading-[1.08] tracking-[-0.8px] sm:text-[3.8rem]">
+                {result.profile.code} - {result.profile.chineseName}
+              </h1>
+              <p className="mt-3 leading-7 text-[1rem] tracking-[0.18px] text-[#4e4e4e]">
+                {result.profile.summary}
+              </p>
+            </div>
+            <p className="pl-4 leading-8 border-l font-display border-[#777169] text-[1rem] tracking-[0.08px] text-[#4e4e4e]">
+              “{result.profile.quote}”
+            </p>
+          </div>
+
+          <div className="grid gap-4">
+            {dimensions.map((dimension) => {
+              const score = result.dimensionScores[dimension.id];
+              return (
+                <article
+                  key={dimension.id}
+                  className="p-5 rounded-[22px] bg-[#f6f6f6] shadow-[rgba(0,0,0,0.075)_0px_0px_0px_0.5px_inset]"
+                >
+                  <div className="flex gap-4 justify-between items-start">
+                    <div>
+                      <div className="text-[12px] tracking-[0.14px] text-[#777169]">
+                        {dimension.name}
+                      </div>
+                      <div className="mt-1 leading-7 text-black text-[1rem] tracking-[0.16px]">
+                        {score.letter} ·{" "}
+                        {score.leaning === "left" ? dimension.leftLabel : dimension.rightLabel}
+                      </div>
+                    </div>
+                    <div
+                      className="py-1 px-3 font-medium rounded-full text-[13px] tracking-[0.14px]"
+                      style={{
+                        background: toneColor(dimension.id, score.leaning, score.purity, 0.16),
+                        color: toneColor(dimension.id, score.leaning, 1),
+                      }}
+                    >
+                      {toPercent(score.purity)}%
+                    </div>
+                  </div>
+
+                  <DimensionBar
+                    dimensionId={dimension.id}
+                    posterior={score.posterior}
+                    purity={score.purity}
+                    leaning={score.leaning}
+                  />
+
+                  <div className="flex justify-between items-center mt-3 text-[12px] tracking-[0.14px] text-[#777169]">
+                    <span>{dimension.leftFullName}</span>
+                    <span>{dimension.rightFullName}</span>
+                  </div>
+
+                  <details className="py-3 px-4 mt-4 bg-white group rounded-[18px] shadow-[rgba(0,0,0,0.05)_0px_0px_0px_1px_inset]">
+                    <summary className="flex gap-3 justify-between items-center font-medium list-none text-black cursor-pointer text-[0.94rem] tracking-[0.14px]">
+                      <span>{dimension.detailTitle}</span>
+                      <span
+                        aria-hidden="true"
+                        className="inline-flex justify-center items-center w-5 h-5 rounded-full transition-transform duration-200 shrink-0 bg-[#f5f2ef] text-[#777169] group-open:rotate-180"
+                      >
+                        <svg
+                          viewBox="0 0 12 12"
+                          className="w-3 h-3"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          aria-hidden="true"
+                          focusable="false"
+                        >
+                          <path
+                            d="M2.25 4.5L6 8.25L9.75 4.5"
+                            stroke="currentColor"
+                            strokeWidth="1.4"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </span>
+                    </summary>
+                    <p className="mt-3 leading-7 text-[0.94rem] tracking-[0.16px] text-[#4e4e4e]">
+                      {dimension.summary}
+                    </p>
+                    <p className="mt-2 leading-7 text-[0.94rem] tracking-[0.16px] text-[#4e4e4e]">
+                      {dimension.detailBody}
+                    </p>
+                  </details>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

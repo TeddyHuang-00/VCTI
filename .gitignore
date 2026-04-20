@@ -1,2 +1,7 @@
 plans/
 .codex
+dist/
+.astro/
+node_modules/
+public/fonts/*.ttf
+.cache/

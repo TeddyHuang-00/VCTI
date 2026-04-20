@@ -1,0 +1,48 @@
+---
+import "@/styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImagePath?: string;
+}
+
+const {
+  title = "VCTI",
+  description = "Vibe-Coder Type Indicator, Astro + React + Tailwind + TypeScript architecture.",
+  ogImagePath = "/og/vcti.png",
+} = Astro.props;
+const basePath = import.meta.env.BASE_URL;
+const site = Astro.site ?? new URL("https://example.github.io");
+const siteWithBase = new URL(basePath, site);
+const normalizedOgImagePath = ogImagePath.startsWith("/") ? ogImagePath.slice(1) : ogImagePath;
+const canonicalUrl = new URL(Astro.url.pathname, site).toString();
+const ogImageUrl = new URL(normalizedOgImagePath, siteWithBase).toString();
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={title} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="preload" href={`${basePath}fonts/LXGWNeoXiHei-Regular.ttf`} as="font" type="font/ttf" crossorigin />
+    <title>{title}</title>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

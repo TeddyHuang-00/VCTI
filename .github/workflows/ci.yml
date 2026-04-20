@@ -1,0 +1,65 @@
+name: CI tests
+
+permissions:
+  contents: read
+
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+      - reopened
+  merge_group:
+  workflow_call:
+
+jobs:
+  format:
+    name: Code Format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: extractions/setup-just@v4
+      - uses: oven-sh/setup-bun@v2
+      - uses: biomejs/setup-biome@v2
+      - run: just format
+
+  lint:
+    name: Code Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: extractions/setup-just@v4
+      - uses: biomejs/setup-biome@v2
+      - run: just lint
+
+  check:
+    name: Code Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: extractions/setup-just@v4
+      - uses: oven-sh/setup-bun@v2
+      - uses: biomejs/setup-biome@v2
+      - run: just check
+
+  build:
+    name: Build Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: extractions/setup-just@v4
+      - uses: oven-sh/setup-bun@v2
+      - uses: biomejs/setup-biome@v2
+      - name: Get font version
+        id: font-version
+        run: |
+          just font-version | tee -a "$GITHUB_OUTPUT"
+      - uses: actions/cache@v5
+        with:
+          path: .cache/fonts
+          key: cache-font-${{ steps.font-version.outputs.wenkai-version }}-${{ steps.font-version.outputs.xihei-version }}
+      - run: just build
+        env:
+          PUBLIC_SITE_URL: https://example.github.io
+          PUBLIC_BASE_PATH: /
