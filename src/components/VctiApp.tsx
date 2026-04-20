@@ -51,7 +51,7 @@ function LikertDots({
         <span>不认同</span>
         <span>认同</span>
       </div>
-      <div className="flex gap-2 justify-between items-end sm:gap-3">
+      <div className="flex gap-2 justify-between items-start sm:gap-3">
         {likertLabels.map((option) => {
           const selected = value === option.value;
           return (
@@ -61,15 +61,17 @@ function LikertDots({
               aria-label={option.label}
               aria-pressed={selected}
               onClick={() => onSelect(option.value)}
-              className="flex flex-col flex-1 gap-3 items-center min-w-0 group"
+              className="flex flex-col flex-1 gap-3 items-center self-start min-w-0 group"
             >
-              <span
-                className={`rounded-full transition-all duration-200 ${getDotSize(option.value)} ${
-                  selected
-                    ? "scale-110 ring-4 ring-[#93c5fd80] ring-offset-2 ring-offset-white"
-                    : "opacity-78 group-hover:scale-105 group-hover:opacity-100"
-                } ${getTone(option.value)}`}
-              />
+              <span className="flex justify-center items-center w-full h-7">
+                <span
+                  className={`rounded-full transition-all duration-200 ${getDotSize(option.value)} ${
+                    selected
+                      ? "scale-110 ring-4 ring-[#93c5fd80] ring-offset-2 ring-offset-white"
+                      : "opacity-78 group-hover:scale-105 group-hover:opacity-100"
+                  } ${getTone(option.value)}`}
+                />
+              </span>
               <span
                 className={`text-center text-[11px] leading-4 tracking-[0.14px] ${
                   selected ? "text-black" : "text-[#777169]"
