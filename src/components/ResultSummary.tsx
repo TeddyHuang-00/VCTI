@@ -23,6 +23,15 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
 }
 
+function getUncertaintyRange(posterior: number) {
+  const center = clamp(Math.abs(posterior) / MAX_REACHABLE_POSTERIOR, 0, 1);
+  const spread = UNCERTAINTY_SPREAD / MAX_REACHABLE_POSTERIOR;
+  return {
+    start: clamp(center - spread, 0, 1),
+    end: clamp(center + spread, 0, 1),
+  };
+}
+
 function toBarPosition(posterior: number) {
   const purity = Math.abs(posterior) / MAX_REACHABLE_POSTERIOR;
   return purity * 50;
@@ -61,18 +70,9 @@ function DimensionBar({
   leaning: "left" | "right";
 }) {
   const position = toBarPosition(posterior);
-  const uncertaintyMin = clamp(
-    Math.abs(posterior - UNCERTAINTY_SPREAD) / MAX_REACHABLE_POSTERIOR,
-    0,
-    1
-  );
-  const uncertaintyMax = clamp(
-    Math.abs(posterior + UNCERTAINTY_SPREAD) / MAX_REACHABLE_POSTERIOR,
-    0,
-    1
-  );
-  const uncertaintyStart = Math.min(uncertaintyMin, uncertaintyMax) * 50;
-  const uncertaintyEnd = Math.max(uncertaintyMin, uncertaintyMax) * 50;
+  const uncertaintyRange = getUncertaintyRange(posterior);
+  const uncertaintyStart = uncertaintyRange.start * 50;
+  const uncertaintyEnd = uncertaintyRange.end * 50;
   const solidStyle = buildBarStyle(leaning, 0, position, BAR_SOLID_HEIGHT_PX / 2);
   const uncertaintyStyle = buildBarStyle(
     leaning,

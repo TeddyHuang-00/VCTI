@@ -52,6 +52,15 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
 }
 
+function getUncertaintyRange(posterior: number) {
+  const center = clamp(Math.abs(posterior) / MAX_REACHABLE_POSTERIOR, 0, 1);
+  const spread = UNCERTAINTY_SPREAD / MAX_REACHABLE_POSTERIOR;
+  return {
+    start: clamp(center - spread, 0, 1),
+    end: clamp(center + spread, 0, 1),
+  };
+}
+
 function barGeometry(
   leaning: "left" | "right",
   purity: number,
@@ -62,18 +71,9 @@ function barGeometry(
   const half = innerTrackWidth / 2;
   const position = purity * 50;
   const fillWidth = half * (position / 50);
-  const uncertaintyMin = clamp(
-    Math.abs(posterior - UNCERTAINTY_SPREAD) / MAX_REACHABLE_POSTERIOR,
-    0,
-    1
-  );
-  const uncertaintyMax = clamp(
-    Math.abs(posterior + UNCERTAINTY_SPREAD) / MAX_REACHABLE_POSTERIOR,
-    0,
-    1
-  );
-  const uncertaintyStart = Math.min(uncertaintyMin, uncertaintyMax) * half;
-  const uncertaintyEnd = Math.max(uncertaintyMin, uncertaintyMax) * half;
+  const uncertaintyRange = getUncertaintyRange(posterior);
+  const uncertaintyStart = uncertaintyRange.start * half;
+  const uncertaintyEnd = uncertaintyRange.end * half;
 
   if (leaning === "left") {
     return {
