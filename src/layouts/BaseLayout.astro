@@ -47,7 +47,19 @@ const ogImageUrl = new URL(normalizedOgImagePath, siteWithBase).toString();
     <link rel="preload" href={`${basePath}fonts/LXGWNeoXiHei-Regular.ttf`} as="font" type="font/ttf" crossorigin />
     <title>{title}</title>
   </head>
-  <body>
-    <slot />
+  <body class="flex flex-col min-h-screen">
+    <div class="flex-1">
+      <slot />
+    </div>
+    <footer class="py-10 px-4 text-center text-[13px] tracking-[0.14px] text-warmgray">
+      <p>
+        本测试仅供娱乐，别太当真。创意来自本 MDRC 人，但全部代码均为 Vibe Coding 产物🤪。
+      </p>
+      <p class="mt-2">
+        <a href="https://github.com/TeddyHuang-00/VCTI" class="underline transition-colors hover:text-black underline-offset-2">GitHub</a>
+        <span class="mx-2">·</span>
+        MIT License
+      </p>
+    </footer>
   </body>
 </html>
