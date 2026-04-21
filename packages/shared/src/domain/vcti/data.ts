@@ -271,9 +271,9 @@ export const questionnaireQuestions = questions.filter(
 );
 
 export const likertLabels = [
-  { value: -3, label: "极度不认同" },
-  { value: -2, label: "不认同" },
-  { value: -1, label: "略不认同" },
+  { value: -3, label: "极度反对" },
+  { value: -2, label: "反对" },
+  { value: -1, label: "略反对" },
   { value: 0, label: "中立" },
   { value: 1, label: "略认同" },
   { value: 2, label: "认同" },

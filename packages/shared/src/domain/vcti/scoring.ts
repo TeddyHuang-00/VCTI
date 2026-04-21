@@ -1,6 +1,5 @@
 import { clamp } from "../../lib/utils";
 import { dimensions, personalityProfiles, questions } from "./data";
-import { DIMENSIONS } from "./types";
 import type {
   AnswerMap,
   AssessmentResult,
@@ -9,6 +8,7 @@ import type {
   PersonalityCode,
   ResultCode,
 } from "./types";
+import { DIMENSIONS } from "./types";
 
 const PRIOR_VARIANCE = 1;
 const OBSERVATION_VARIANCE = 0.5;

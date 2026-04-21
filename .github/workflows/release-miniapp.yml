@@ -1,0 +1,48 @@
+name: Release Mini Program
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version (e.g. 0.1.0)"
+        required: true
+        type: string
+      description:
+        description: "Release description"
+        required: false
+        default: ""
+        type: string
+      robot:
+        description: "Upload robot number (1-30)"
+        required: false
+        default: "1"
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    name: Build & Upload Mini Program
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Just
+        uses: extractions/setup-just@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Write private key
+        run: |
+          echo "${{ secrets.MINIAPP_PRIVATE_KEY }}" > apps/miniapp/private.key
+
+      - name: Build & Upload
+        env:
+          TARO_APP_ID: ${{ secrets.TARO_APP_ID }}
+          MINIAPP_VERSION: ${{ inputs.version }}
+          MINIAPP_DESC: ${{ inputs.description }}
+          MINIAPP_ROBOT: ${{ inputs.robot }}
+        run: just release-miniapp

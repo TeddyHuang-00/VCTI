@@ -1,0 +1,14 @@
+{
+  "miniprogramRoot": "dist/",
+  "projectname": "VCTI",
+  "description": "Vibe-Coder Type Indicator",
+  "appid": "",
+  "setting": {
+    "es6": true,
+    "es7": true,
+    "minified": true,
+    "urlCheck": true,
+    "ignoreUploadUnusedFiles": true
+  },
+  "compileType": "miniprogram"
+}

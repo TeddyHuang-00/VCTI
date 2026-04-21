@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    // The baseUrl is to be deprecated in TS 7.0, but the VSCode plugins still rely on it for path mapping. Once the plugins are updated, we can remove this and switch to the new "imports" field.
+    "ignoreDeprecations": "6.0",
+    "target": "ES2015",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@vcti/shared/*": ["../../packages/shared/src/*"]
+    }
+  },
+  "include": ["src", "types"]
+}

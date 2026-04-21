@@ -3,5 +3,11 @@ plans/
 dist/
 .astro/
 node_modules/
-**/public/fonts/*.ttf
+apps/web/public/fonts/*.ttf
+apps/web/public/archetypes/*.png
+apps/miniapp/src/assets/archetypes/
 .cache/
+.env
+**/.swc/
+apps/miniapp/private.key
+apps/miniapp/preview-qrcode.png

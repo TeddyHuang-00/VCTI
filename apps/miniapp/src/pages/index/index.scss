@@ -1,0 +1,233 @@
+.page-questionnaire {
+  padding: 24px 12px 48px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.hero {
+  margin-bottom: 32px;
+  padding-left: 4px;
+
+  &__badge {
+    display: inline-flex;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: #000;
+    background: rgba(245, 242, 239, 0.8);
+    border-radius: 9999px;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05), 0 6px 16px rgba(78, 50, 23, 0.04);
+  }
+
+  &__title {
+    display: block;
+    margin-top: 6px;
+    font-size: 36px;
+    font-weight: 300;
+    line-height: 1.1;
+    letter-spacing: -0.72px;
+    color: #000;
+    white-space: pre-line;
+  }
+
+  &__desc {
+    display: block;
+    margin-top: 8px;
+    font-size: 17px;
+    line-height: 1.6;
+    color: #4e4e4e;
+  }
+}
+
+.card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 16px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06), 0 4px 4px rgba(0, 0, 0, 0.04);
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  &__label {
+    display: block;
+    font-size: 12px;
+    letter-spacing: 0.14px;
+    color: #777169;
+  }
+
+  &__title {
+    display: block;
+    margin-top: 4px;
+    font-size: 28px;
+    font-weight: 300;
+    line-height: 1.2;
+    color: #000;
+  }
+
+  &__meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+  }
+
+  &__counter {
+    padding: 6px 14px;
+    font-size: 13px;
+    letter-spacing: 0.14px;
+    color: #4e4e4e;
+    background: #f5f5f5;
+    border-radius: 9999px;
+    box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.075);
+  }
+
+  &__answered {
+    font-size: 13px;
+    letter-spacing: 0.14px;
+    color: #777169;
+  }
+
+  &__nav {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+  }
+}
+
+.btn-reset {
+  flex-shrink: 0;
+  padding: 6px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #000;
+  background: rgba(245, 242, 239, 0.8);
+  border-radius: 9999px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05), 0 6px 16px rgba(78, 50, 23, 0.04);
+  border: none;
+  line-height: 1.4;
+  min-width: 0;
+  width: auto;
+  margin: 0;
+  align-self: flex-start;
+
+  &::after {
+    border: none;
+  }
+}
+
+.btn-nav {
+  flex: 1;
+  min-width: 0;
+  padding: 14px 24px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #000 !important;
+  background: #fff !important;
+  border-radius: 9999px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4), 0 4px 4px rgba(0, 0, 0, 0.04);
+  border: none;
+  text-align: center;
+  line-height: 1.4;
+  overflow: visible;
+  margin: 0;
+
+  &[disabled] {
+    opacity: 0.4;
+    color: rgba(0, 0, 0, 0.4) !important;
+  }
+
+  &::after {
+    border: none;
+  }
+}
+
+.progress-bar {
+  overflow: hidden;
+  margin-top: 20px;
+  height: 6px;
+  background: #f0eeea;
+  border-radius: 9999px;
+
+  &__fill {
+    height: 100%;
+    background: #000;
+    border-radius: 9999px;
+    transition: width 300ms;
+  }
+}
+
+.question-panel {
+  margin-top: 20px;
+  padding: 20px 16px;
+  background: #f6f6f6;
+  border-radius: 20px;
+  box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.075);
+
+  &__prompt {
+    display: block;
+    font-size: 19px;
+    line-height: 1.65;
+    letter-spacing: 0.18px;
+    color: #000;
+  }
+
+  &__dots {
+    margin-top: 24px;
+  }
+}
+
+.likert-dots {
+  display: flex;
+  gap: 2px;
+  justify-content: space-between;
+  padding: 0 2px;
+}
+
+.likert-dot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  cursor: pointer;
+
+  &__circle-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 42px;
+  }
+
+  &__circle {
+    border-radius: 50%;
+    transition: all 200ms;
+    opacity: 0.78;
+  }
+
+  &--selected &__circle {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+
+  &__label {
+    margin-top: 10px;
+    font-size: 13px;
+    line-height: 1.3;
+    letter-spacing: 0.1px;
+    text-align: center;
+    color: #777169;
+    word-break: keep-all;
+  }
+
+  &--selected &__label {
+    color: #000;
+    font-weight: 700;
+  }
+}

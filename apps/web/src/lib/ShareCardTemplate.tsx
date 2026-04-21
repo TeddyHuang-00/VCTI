@@ -304,7 +304,13 @@ export default function ShareCardTemplate({
         >
           {dimensions.map((dimension, index) => {
             const score = result.dimensionScores[dimension.id];
-            const geometry = barGeometry(score.leaning, score.purity, score.posterior, trackWidth, score.variance);
+            const geometry = barGeometry(
+              score.leaning,
+              score.purity,
+              score.posterior,
+              trackWidth,
+              score.variance
+            );
             return (
               <div
                 key={dimension.id}

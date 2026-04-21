@@ -8,12 +8,16 @@
     "apps/*"
   ],
   "scripts": {
-    "dev": "bun run --cwd apps/web dev",
-    "dev:web": "bun run --cwd apps/web dev",
-    "build": "bun run --cwd apps/web build",
-    "build:web": "bun run --cwd apps/web build",
-    "preview": "bun run --cwd apps/web preview",
-    "check": "bun run --cwd apps/web check",
+    "dev": "bun run --cwd apps/web --bun astro dev",
+    "dev:web": "bun run --cwd apps/web --bun astro dev",
+    "dev:miniapp": "bun run --cwd apps/miniapp --bun taro build --type h5 --watch",
+    "build": "bun run --cwd apps/web --bun astro build",
+    "build:web": "bun run --cwd apps/web --bun astro build",
+    "build:miniapp": "bun run --cwd apps/miniapp --bun taro build --type weapp",
+    "preview": "bun run --cwd apps/web --bun astro preview",
+    "check": "bun run --cwd apps/web --bun astro check",
+    "check:web": "bun run --cwd apps/web --bun astro check",
+    "check:miniapp": "bun run --cwd apps/miniapp --bun taro build --type weapp",
     "lint": "biome check .",
     "format": "biome format --write .",
     "validate": "bun run check && bun run lint"

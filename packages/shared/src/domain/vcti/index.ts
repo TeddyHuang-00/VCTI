@@ -5,6 +5,7 @@ export {
   questionnaireQuestions,
   questions,
 } from "./data";
+export type { ParsedDimensionScores } from "./scoring";
 export {
   calculateAssessment,
   calculateAssessmentFromDimensionPosteriors,
@@ -13,7 +14,6 @@ export {
   parseResultCodeFromQuery,
   serializeDimensionScores,
 } from "./scoring";
-export type { ParsedDimensionScores } from "./scoring";
 export type {
   AnswerMap,
   AssessmentResult,
