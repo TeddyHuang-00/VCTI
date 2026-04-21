@@ -3,5 +3,5 @@ plans/
 dist/
 .astro/
 node_modules/
-public/fonts/*.ttf
+**/public/fonts/*.ttf
 .cache/

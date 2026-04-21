@@ -1,5 +1,5 @@
-import type { AnswerMap, AssessmentResult, Question } from "@/domain/vcti";
-import { calculateAssessment, questionnaireQuestions } from "@/domain/vcti";
+import type { AnswerMap, AssessmentResult, Question } from "../../domain/vcti";
+import { calculateAssessment, questionnaireQuestions } from "../../domain/vcti";
 
 export interface QuestionnaireState {
   currentIndex: number;

@@ -1,9 +1,4 @@
-import type {
-  DimensionDescriptor,
-  PersonalityProfile,
-  Question,
-  ResultCode,
-} from "@/domain/vcti/types";
+import type { DimensionDescriptor, PersonalityProfile, Question, ResultCode } from "./types";
 
 export const dimensions: DimensionDescriptor[] = [
   {

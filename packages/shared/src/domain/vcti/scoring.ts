@@ -1,4 +1,5 @@
-import { dimensions, personalityProfiles, questions } from "@/domain/vcti/data";
+import { clamp } from "../../lib/utils";
+import { dimensions, personalityProfiles, questions } from "./data";
 import type {
   AnswerMap,
   AssessmentResult,
@@ -6,8 +7,7 @@ import type {
   DimensionScore,
   PersonalityCode,
   ResultCode,
-} from "@/domain/vcti/types";
-import { clamp } from "@/lib/utils";
+} from "./types";
 
 const PRIOR_VARIANCE = 1;
 const OBSERVATION_VARIANCE = 0.5;

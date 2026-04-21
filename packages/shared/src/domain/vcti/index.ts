@@ -4,7 +4,7 @@ export {
   personalityProfiles,
   questionnaireQuestions,
   questions,
-} from "@/domain/vcti/data";
+} from "./data";
 export {
   calculateAssessment,
   calculateAssessmentFromDimensionPosteriors,
@@ -12,7 +12,7 @@ export {
   parseDimensionScoresFromQuery,
   parseResultCodeFromQuery,
   serializeDimensionScores,
-} from "@/domain/vcti/scoring";
+} from "./scoring";
 export type {
   AnswerMap,
   AssessmentResult,
@@ -24,5 +24,5 @@ export type {
   PersonalityProfile,
   Question,
   ResultCode,
-} from "@/domain/vcti/types";
-export { EASTER_EGG_CODES, PERSONALITY_CODES } from "@/domain/vcti/types";
+} from "./types";
+export { EASTER_EGG_CODES, PERSONALITY_CODES } from "./types";

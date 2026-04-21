@@ -1,8 +1,7 @@
 /** @jsxImportSource react */
 import resvgWasmUrl from "@resvg/resvg-wasm/index_bg.wasm?url";
+import type { AssessmentResult } from "@vcti/shared/domain/vcti/types";
 import yogaWasmUrl from "satori/yoga.wasm?url";
-
-import type { AssessmentResult } from "@/domain/vcti/types";
 import ShareCardTemplate from "@/lib/ShareCardTemplate";
 import { initSatoriEngine, renderSatoriToPng } from "@/lib/satori-core";
 

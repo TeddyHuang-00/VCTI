@@ -1,5 +1,3 @@
-import { useEffect, useMemo, useReducer } from "react";
-
 import {
   canCompleteQuestionnaire,
   createInitialQuestionnaireState,
@@ -7,8 +5,9 @@ import {
   getCurrentQuestion,
   getQuestionnaireProgress,
   questionnaireReducer,
-} from "@/app/questionnaire/session";
-import { likertLabels, serializeDimensionScores } from "@/domain/vcti";
+} from "@vcti/shared/app/questionnaire/session";
+import { likertLabels, serializeDimensionScores } from "@vcti/shared/domain/vcti";
+import { useEffect, useMemo, useReducer } from "react";
 
 interface VctiAppProps {
   basePath?: string;

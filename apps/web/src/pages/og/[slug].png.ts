@@ -1,6 +1,5 @@
+import { personalityProfiles } from "@vcti/shared/domain/vcti";
 import type { APIRoute } from "astro";
-
-import { personalityProfiles } from "@/domain/vcti";
 import { renderOgPng } from "@/lib/og-render";
 
 const ogEntries = [

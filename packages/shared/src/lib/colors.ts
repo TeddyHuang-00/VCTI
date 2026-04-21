@@ -1,4 +1,4 @@
-import type { DimensionId } from "@/domain/vcti/types";
+import type { DimensionId } from "../domain/vcti/types";
 
 export const DIMENSION_COLORS: Record<DimensionId, { left: string; right: string }> = {
   MA: { left: "#c44a3a", right: "#2581c4" },

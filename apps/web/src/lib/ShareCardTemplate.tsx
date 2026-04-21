@@ -1,7 +1,7 @@
-import { dimensions, MAX_REACHABLE_POSTERIOR } from "@/domain/vcti";
-import type { AssessmentResult, DimensionId } from "@/domain/vcti/types";
-import { DIMENSION_COLORS, withAlpha } from "@/lib/colors";
-import { clamp } from "@/lib/utils";
+import { dimensions, MAX_REACHABLE_POSTERIOR } from "@vcti/shared/domain/vcti";
+import type { AssessmentResult, DimensionId } from "@vcti/shared/domain/vcti/types";
+import { DIMENSION_COLORS, withAlpha } from "@vcti/shared/lib/colors";
+import { clamp } from "@vcti/shared/lib/utils";
 
 const UNCERTAINTY_SPREAD = 0.35;
 const BAR_SIDE_PADDING_PX = 3;

@@ -1,12 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
-
-import ResultSummary from "@/components/ResultSummary";
 import {
   calculateAssessmentFromDimensionPosteriors,
   parseDimensionScoresFromQuery,
   parseResultCodeFromQuery,
-} from "@/domain/vcti";
-import type { ResultCode } from "@/domain/vcti/types";
+} from "@vcti/shared/domain/vcti";
+import type { ResultCode } from "@vcti/shared/domain/vcti/types";
+import { useEffect, useMemo, useState } from "react";
+import ResultSummary from "@/components/ResultSummary";
 import { preloadShareCardAssets, renderShareCardToPng } from "@/lib/share-card-render";
 
 function loadImageAsDataUrl(src: string) {
