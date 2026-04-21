@@ -13,7 +13,7 @@ const SHARE_EXPORT_SCALE = 1.5;
 let engineInitPromise: Promise<void> | null = null;
 let fontDataPromise: Promise<{ sans: ArrayBuffer; serif: ArrayBuffer }> | null = null;
 
-async function ensureEnginesReady() {
+function ensureEnginesReady() {
   if (!engineInitPromise) {
     engineInitPromise = (async () => {
       const [yogaWasm, resvgWasm] = await Promise.all([
@@ -23,10 +23,10 @@ async function ensureEnginesReady() {
       await initSatoriEngine(new Uint8Array(yogaWasm), new Uint8Array(resvgWasm));
     })();
   }
-  await engineInitPromise;
+  return engineInitPromise;
 }
 
-async function loadFonts(basePath: string) {
+function loadFonts(basePath: string) {
   if (!fontDataPromise) {
     fontDataPromise = (async () => {
       const [sans, serif] = await Promise.all([
@@ -37,6 +37,11 @@ async function loadFonts(basePath: string) {
     })();
   }
   return fontDataPromise;
+}
+
+export function preloadShareCardAssets(basePath: string): void {
+  ensureEnginesReady();
+  loadFonts(basePath);
 }
 
 export async function renderShareCardToPng({

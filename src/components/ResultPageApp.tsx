@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import ResultSummary from "@/components/ResultSummary";
 import {
@@ -7,7 +7,7 @@ import {
   parseResultCodeFromQuery,
 } from "@/domain/vcti";
 import type { ResultCode } from "@/domain/vcti/types";
-import { renderShareCardToPng } from "@/lib/share-card-render";
+import { preloadShareCardAssets, renderShareCardToPng } from "@/lib/share-card-render";
 
 function loadImageAsDataUrl(src: string) {
   return new Promise<string>((resolve, reject) => {
@@ -87,6 +87,11 @@ export default function ResultPageApp({
 }) {
   const [copied, setCopied] = useState(false);
   const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    preloadShareCardAssets(basePath);
+  }, [basePath]);
+
   const result = useMemo(() => {
     if (typeof window === "undefined") return null;
     const searchParams = new URLSearchParams(window.location.search);
