@@ -134,7 +134,7 @@ export default function ResultPageApp({
   if (!result) {
     return (
       <div className="px-4 pt-10 pb-16 mx-auto max-w-4xl sm:px-6 lg:px-8">
-        <div className="p-8 text-center bg-white rounded-[24px] shadow-card">
+        <div className="p-8 text-center bg-white rounded-3xl shadow-card">
           <h1 className="font-light text-black font-display text-[3rem] tracking-[-0.8px]">
             链接已失效
           </h1>

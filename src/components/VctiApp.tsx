@@ -42,37 +42,37 @@ function LikertDots({
 }) {
   return (
     <div className="flex gap-2 justify-between items-start sm:gap-3">
-        {likertLabels.map((option) => {
-          const selected = value === option.value;
-          return (
-            <button
-              key={option.value}
-              type="button"
-              aria-label={option.label}
-              aria-pressed={selected}
-              onClick={() => onSelect(option.value)}
-              className="flex flex-col flex-1 gap-3 items-center self-start min-w-0 group"
-            >
-              <span className="flex justify-center items-center w-full h-7">
-                <span
-                  className={`rounded-full transition-all duration-200 ${getDotSize(option.value)} ${
-                    selected
-                      ? "scale-110 ring-2 ring-[rgba(147,197,253,0.35)] ring-offset-2 ring-offset-white outline outline-2 outline-offset-[5px] [outline-style:dashed] outline-[rgba(147,197,253,0.2)]"
-                      : "opacity-78 group-hover:scale-105 group-hover:opacity-100"
-                  } ${getTone(option.value)}`}
-                />
-              </span>
+      {likertLabels.map((option) => {
+        const selected = value === option.value;
+        return (
+          <button
+            key={option.value}
+            type="button"
+            aria-label={option.label}
+            aria-pressed={selected}
+            onClick={() => onSelect(option.value)}
+            className="flex flex-col flex-1 gap-3 items-center self-start min-w-0 group"
+          >
+            <span className="flex justify-center items-center w-full h-7">
               <span
-                className={`text-center text-[11px] leading-4 tracking-[0.14px] transition-all duration-200 ${
-                  selected ? "text-black font-bold" : "text-warmgray group-hover:font-bold"
-                }`}
-              >
-                {option.label}
-              </span>
-            </button>
-          );
-        })}
-      </div>
+                className={`rounded-full transition-all duration-200 ${getDotSize(option.value)} ${
+                  selected
+                    ? "scale-110 ring-2 ring-[rgba(147,197,253,0.35)] ring-offset-2 ring-offset-white outline outline-offset-[5px] outline-dashed outline-[rgba(147,197,253,0.2)]"
+                    : "opacity-78 group-hover:scale-105 group-hover:opacity-100"
+                } ${getTone(option.value)}`}
+              />
+            </span>
+            <span
+              className={`text-center text-[11px] leading-4 tracking-[0.14px] transition-all duration-200 ${
+                selected ? "text-black font-bold" : "text-warmgray group-hover:font-bold"
+              }`}
+            >
+              {option.label}
+            </span>
+          </button>
+        );
+      })}
+    </div>
   );
 }
 
@@ -98,7 +98,7 @@ export default function VctiApp({ basePath = "/" }: VctiAppProps) {
 
   return (
     <div className="px-4 pt-8 pb-16 mx-auto max-w-6xl sm:px-6 lg:px-8 lg:pt-10 lg:pb-24">
-      <section className="space-y-5 max-w-[42rem]">
+      <section className="space-y-5 max-w-2xl">
         <div className="inline-flex py-2 px-4 font-medium text-black uppercase rounded-full ring-1 bg-stone/80 text-[12px] tracking-[0.7px] shadow-warm ring-black/5">
           VCTI
         </div>
@@ -112,7 +112,7 @@ export default function VctiApp({ basePath = "/" }: VctiAppProps) {
         </p>
       </section>
 
-      <section className="p-5 mt-12 bg-white sm:p-7 rounded-[24px] shadow-card">
+      <section className="p-5 mt-12 bg-white rounded-3xl sm:p-7 shadow-card">
         <div className="flex gap-4 justify-between items-center">
           <div>
             <div className="text-[12px] tracking-[0.14px] text-warmgray">VCTI 量表</div>
@@ -129,7 +129,7 @@ export default function VctiApp({ basePath = "/" }: VctiAppProps) {
           </button>
         </div>
 
-        <div className="overflow-hidden mt-6 rounded-full h-[6px] bg-[#f0eeea]">
+        <div className="overflow-hidden mt-6 h-1.5 rounded-full bg-[#f0eeea]">
           <div
             className="h-full bg-black rounded-full duration-300 transition-[width]"
             style={{ width: `${progress.ratio * 100}%` }}
@@ -145,7 +145,7 @@ export default function VctiApp({ basePath = "/" }: VctiAppProps) {
           </div>
         </div>
 
-        <article className="p-5 mt-6 sm:p-7 rounded-[24px] bg-mist shadow-inset-border">
+        <article className="p-5 mt-6 rounded-3xl sm:p-7 bg-mist shadow-inset-border">
           <p className="mt-3 text-black text-[1.12rem] leading-[1.65] tracking-[0.18px]">
             {currentQuestion.prompt}
           </p>

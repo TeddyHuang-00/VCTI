@@ -111,10 +111,10 @@ export default function ResultSummary({
 }) {
   return (
     <section id={captureId} className="grid gap-8">
-      <div className="p-6 bg-white sm:p-8 rounded-[24px] shadow-card">
+      <div className="p-6 bg-white rounded-3xl sm:p-8 shadow-card">
         <div className="grid gap-8 xl:grid-cols-[0.78fr_1.22fr]">
           <div className="space-y-5">
-            <div className="overflow-hidden mx-auto w-full aspect-square max-w-[240px]">
+            <div className="overflow-hidden mx-auto w-full aspect-square max-w-60">
               <img
                 src={`${basePath}archetypes/${result.profile.imageName}`}
                 alt={result.profile.chineseName}
