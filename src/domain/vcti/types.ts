@@ -5,24 +5,28 @@ export type DimensionId = (typeof DIMENSIONS)[number];
 export type LikertValue = (typeof LIKERT_OPTIONS)[number];
 export type QuestionCategory = "core" | "scenario" | "signal";
 export type QuestionInput = "likert" | "choice";
-export type PersonalityCode =
-  | "MDRC"
-  | "MDRP"
-  | "MDJC"
-  | "MDJP"
-  | "ADRC"
-  | "ADRP"
-  | "ADJC"
-  | "ADJP"
-  | "AVRC"
-  | "AVRP"
-  | "AVJC"
-  | "AVJP"
-  | "MVRC"
-  | "MVRP"
-  | "MVJC"
-  | "MVJP";
-export type EasterEggCode = "SING" | "BUG" | "LEGEND" | "VOID" | "HALL" | "SUDO";
+export const PERSONALITY_CODES = [
+  "MDRC",
+  "MDRP",
+  "MDJC",
+  "MDJP",
+  "ADRC",
+  "ADRP",
+  "ADJC",
+  "ADJP",
+  "AVRC",
+  "AVRP",
+  "AVJC",
+  "AVJP",
+  "MVRC",
+  "MVRP",
+  "MVJC",
+  "MVJP",
+] as const;
+export const EASTER_EGG_CODES = ["SING", "BUG", "LEGEND", "VOID", "HALL", "SUDO"] as const;
+
+export type PersonalityCode = (typeof PERSONALITY_CODES)[number];
+export type EasterEggCode = (typeof EASTER_EGG_CODES)[number];
 export type ResultCode = PersonalityCode | EasterEggCode;
 
 export interface QuestionChoice {

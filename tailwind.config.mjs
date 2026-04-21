@@ -14,6 +14,9 @@ export default {
       boxShadow: {
         card: "rgba(0,0,0,0.06) 0px 0px 0px 1px, rgba(0,0,0,0.04) 0px 4px 4px",
         warm: "rgba(78,50,23,0.04) 0px 6px 16px",
+        "btn-white": "rgba(0,0,0,0.4) 0px 0px 1px, rgba(0,0,0,0.04) 0px 4px 4px",
+        "inset-border": "rgba(0,0,0,0.075) 0px 0px 0px 0.5px inset",
+        "inset-subtle": "rgba(0,0,0,0.05) 0px 0px 0px 1px inset",
       },
       fontFamily: {
         display: ["'LXGW WenKai'", "serif"],

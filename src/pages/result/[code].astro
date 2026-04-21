@@ -4,6 +4,22 @@ import ResultPageApp from "@/components/ResultPageApp";
 import { personalityProfiles } from "@/domain/vcti";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 
+const basePath = import.meta.env.BASE_URL;
+const site = Astro.site ?? new URL("https://example.github.io");
+const questionnaireUrl = new URL(basePath, site).toString();
+
+let sharedQrDataUrl: string | null = null;
+async function getSharedQrDataUrl() {
+  if (!sharedQrDataUrl) {
+    sharedQrDataUrl = await QRCode.toDataURL(questionnaireUrl, {
+      margin: 1,
+      width: 220,
+      color: { dark: "#000000", light: "#ffffff" },
+    });
+  }
+  return sharedQrDataUrl;
+}
+
 export function getStaticPaths() {
   return Object.values(personalityProfiles).map((profile) => ({
     params: { code: profile.code.toLowerCase() },
@@ -12,20 +28,7 @@ export function getStaticPaths() {
 }
 
 const { profile } = Astro.props;
-const basePath = import.meta.env.BASE_URL;
-const site = Astro.site ?? new URL("https://example.github.io");
-const questionnaireUrl = new URL(basePath, site).toString();
-const qrCodeApi = QRCode as typeof QRCode & {
-  toDataURL: (text: string, options?: Record<string, unknown>) => Promise<string>;
-};
-const questionnaireQrDataUrl = await qrCodeApi.toDataURL(questionnaireUrl, {
-  margin: 1,
-  width: 220,
-  color: {
-    dark: "#000000",
-    light: "#ffffff",
-  },
-});
+const questionnaireQrDataUrl = await getSharedQrDataUrl();
 ---
 
 <BaseLayout
@@ -42,18 +45,18 @@ const questionnaireQrDataUrl = await qrCodeApi.toDataURL(questionnaireUrl, {
         questionnaireQrDataUrl={questionnaireQrDataUrl}
       />
       <div class="px-4 pb-16 mx-auto mt-2 max-w-6xl sm:px-6 lg:px-8">
-        <section class="p-6 bg-white rounded-[24px] shadow-[rgba(0,0,0,0.06)_0px_0px_0px_1px,rgba(0,0,0,0.04)_0px_4px_4px]">
+        <section class="p-6 bg-white rounded-[24px] shadow-card">
           <div class="grid gap-6 lg:items-center lg:grid-cols-[0.8fr_0.2fr]">
             <div>
-              <div class="text-[12px] tracking-[0.14px] text-[#777169]">Questionnaire QR</div>
+              <div class="text-[12px] tracking-[0.14px] text-warmgray">Questionnaire QR</div>
               <h2 class="mt-2 font-light text-black font-display text-[2rem] leading-[1.15]">
                 扫码测测你是哪种 vibe coder
               </h2>
-              <p class="mt-3 max-w-2xl leading-7 text-[1rem] tracking-[0.16px] text-[#4e4e4e]">
+              <p class="mt-3 max-w-2xl leading-7 text-[1rem] tracking-[0.16px] text-graphite">
                 把这张结果图发给朋友时，对方扫码就能直接进入测试，看看你们的编码人格差多少。
               </p>
             </div>
-            <div class="overflow-hidden p-4 mx-auto w-[220px] shrink-0 rounded-[20px] bg-[#f6f6f6] shadow-[rgba(0,0,0,0.075)_0px_0px_0px_0.5px_inset]">
+            <div class="overflow-hidden p-4 mx-auto w-[220px] shrink-0 rounded-[20px] bg-mist shadow-inset-border">
               <img src={questionnaireQrDataUrl} alt="VCTI questionnaire QR code" class="w-full h-auto" />
             </div>
           </div>

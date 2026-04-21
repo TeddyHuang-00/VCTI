@@ -1,4 +1,9 @@
-import type { DimensionDescriptor, PersonalityProfile, Question } from "@/domain/vcti/types";
+import type {
+  DimensionDescriptor,
+  PersonalityProfile,
+  Question,
+  ResultCode,
+} from "@/domain/vcti/types";
 
 export const dimensions: DimensionDescriptor[] = [
   {
@@ -266,7 +271,9 @@ export const questions: Question[] = [
   },
 ];
 
-export const questionnaireQuestions = questions.filter((question) => question.category === "core");
+export const questionnaireQuestions = questions.filter(
+  (question) => question.category !== "scenario"
+);
 
 export const likertLabels = [
   { value: -3, label: "极度不认同" },
@@ -278,7 +285,7 @@ export const likertLabels = [
   { value: 3, label: "极度认同" },
 ] as const;
 
-export const personalityProfiles: Record<string, PersonalityProfile> = {
+export const personalityProfiles: Record<ResultCode, PersonalityProfile> = {
   MDRC: {
     code: "MDRC",
     chineseName: "数字考古学家",

@@ -1,26 +1,15 @@
 import { dimensions, MAX_REACHABLE_POSTERIOR } from "@/domain/vcti";
 import type { AssessmentResult, DimensionId } from "@/domain/vcti/types";
+import { DIMENSION_COLORS, withAlpha, withSaturation } from "@/lib/colors";
+import { clamp } from "@/lib/utils";
 
 const UNCERTAINTY_SPREAD = 0.35;
 const BAR_SIDE_PADDING_PX = 3;
 const BAR_SOLID_HEIGHT_PX = 10;
 const BAR_UNCERTAINTY_HEIGHT_PX = 8;
-const dimensionColors: Record<
-  DimensionId,
-  { left: [number, number, number]; right: [number, number, number] }
-> = {
-  MA: { left: [196, 74, 58], right: [37, 129, 196] },
-  DV: { left: [78, 121, 167], right: [211, 124, 49] },
-  RJ: { left: [60, 153, 119], right: [176, 86, 147] },
-  CP: { left: [116, 94, 196], right: [176, 142, 62] },
-};
 
 function toPercent(value: number) {
   return Math.round(value * 100);
-}
-
-function clamp(value: number, min: number, max: number) {
-  return Math.min(max, Math.max(min, value));
 }
 
 function getUncertaintyRange(posterior: number) {
@@ -44,7 +33,6 @@ function buildBarStyle(leaning: "left" | "right", start: number, span: number, r
       width: `calc(${span}% + ${radiusPx}px)`,
     };
   }
-
   return {
     left: `calc(${50 + start}% - ${radiusPx}px)`,
     width: `calc(${span}% + ${radiusPx}px)`,
@@ -52,9 +40,7 @@ function buildBarStyle(leaning: "left" | "right", start: number, span: number, r
 }
 
 function toneColor(dimensionId: DimensionId, leaning: "left" | "right", purity: number, alpha = 1) {
-  const palette = dimensionColors[dimensionId][leaning];
-  const saturation = 0.32 + purity * 0.68;
-  const [r, g, b] = palette.map((channel) => Math.round(255 - (255 - channel) * saturation));
+  const [r, g, b] = withSaturation(DIMENSION_COLORS[dimensionId][leaning], 0.32 + purity * 0.68);
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
@@ -83,7 +69,7 @@ function DimensionBar({
 
   return (
     <div className="mt-4">
-      <div className="relative h-4 rounded-full bg-[#f3f1ee] shadow-[rgba(0,0,0,0.05)_0px_0px_0px_1px_inset]">
+      <div className="relative h-4 rounded-full bg-[#f3f1ee] shadow-inset-subtle">
         <div
           className="absolute inset-y-0"
           style={{
@@ -125,7 +111,7 @@ export default function ResultSummary({
 }) {
   return (
     <section id={captureId} className="grid gap-8">
-      <div className="p-6 bg-white sm:p-8 rounded-[24px] shadow-[rgba(0,0,0,0.06)_0px_0px_0px_1px,rgba(0,0,0,0.04)_0px_4px_4px]">
+      <div className="p-6 bg-white sm:p-8 rounded-[24px] shadow-card">
         <div className="grid gap-8 xl:grid-cols-[0.78fr_1.22fr]">
           <div className="space-y-5">
             <div className="overflow-hidden mx-auto w-full aspect-square max-w-[240px]">
@@ -139,12 +125,12 @@ export default function ResultSummary({
               <h1 className="font-light text-black font-display text-[2.8rem] leading-[1.08] tracking-[-0.8px] sm:text-[3.8rem]">
                 {result.profile.code} - {result.profile.chineseName}
               </h1>
-              <p className="mt-3 leading-7 text-[1rem] tracking-[0.18px] text-[#4e4e4e]">
+              <p className="mt-3 leading-7 text-[1rem] tracking-[0.18px] text-graphite">
                 {result.profile.summary}
               </p>
             </div>
-            <p className="pl-4 leading-8 border-l font-display border-[#777169] text-[1rem] tracking-[0.08px] text-[#4e4e4e]">
-              “{result.profile.quote}”
+            <p className="pl-4 leading-8 border-l font-display border-warmgray text-[1rem] tracking-[0.08px] text-graphite">
+              "{result.profile.quote}"
             </p>
           </div>
 
@@ -154,11 +140,11 @@ export default function ResultSummary({
               return (
                 <article
                   key={dimension.id}
-                  className="p-5 rounded-[22px] bg-[#f6f6f6] shadow-[rgba(0,0,0,0.075)_0px_0px_0px_0.5px_inset]"
+                  className="p-5 rounded-[22px] bg-mist shadow-inset-border"
                 >
                   <div className="flex gap-4 justify-between items-start">
                     <div>
-                      <div className="text-[12px] tracking-[0.14px] text-[#777169]">
+                      <div className="text-[12px] tracking-[0.14px] text-warmgray">
                         {dimension.name}
                       </div>
                       <div className="mt-1 leading-7 text-black text-[1rem] tracking-[0.16px]">
@@ -169,8 +155,8 @@ export default function ResultSummary({
                     <div
                       className="py-1 px-3 font-medium rounded-full text-[13px] tracking-[0.14px]"
                       style={{
-                        background: toneColor(dimension.id, score.leaning, score.purity, 0.16),
-                        color: toneColor(dimension.id, score.leaning, 1),
+                        background: withAlpha(DIMENSION_COLORS[dimension.id][score.leaning], 0.16),
+                        color: DIMENSION_COLORS[dimension.id][score.leaning],
                       }}
                     >
                       {toPercent(score.purity)}%
@@ -184,17 +170,17 @@ export default function ResultSummary({
                     leaning={score.leaning}
                   />
 
-                  <div className="flex justify-between items-center mt-3 text-[12px] tracking-[0.14px] text-[#777169]">
+                  <div className="flex justify-between items-center mt-3 text-[12px] tracking-[0.14px] text-warmgray">
                     <span>{dimension.leftFullName}</span>
                     <span>{dimension.rightFullName}</span>
                   </div>
 
-                  <details className="py-3 px-4 mt-4 bg-white group rounded-[18px] shadow-[rgba(0,0,0,0.05)_0px_0px_0px_1px_inset]">
+                  <details className="py-3 px-4 mt-4 bg-white group rounded-[18px] shadow-inset-subtle">
                     <summary className="flex gap-3 justify-between items-center font-medium list-none text-black cursor-pointer text-[0.94rem] tracking-[0.14px]">
                       <span>{dimension.detailTitle}</span>
                       <span
                         aria-hidden="true"
-                        className="inline-flex justify-center items-center w-5 h-5 rounded-full transition-transform duration-200 shrink-0 bg-[#f5f2ef] text-[#777169] group-open:rotate-180"
+                        className="inline-flex justify-center items-center w-5 h-5 rounded-full transition-transform duration-200 shrink-0 bg-stone text-warmgray group-open:rotate-180"
                       >
                         <svg
                           viewBox="0 0 12 12"
@@ -214,10 +200,10 @@ export default function ResultSummary({
                         </svg>
                       </span>
                     </summary>
-                    <p className="mt-3 leading-7 text-[0.94rem] tracking-[0.16px] text-[#4e4e4e]">
+                    <p className="mt-3 leading-7 text-[0.94rem] tracking-[0.16px] text-graphite">
                       {dimension.summary}
                     </p>
-                    <p className="mt-2 leading-7 text-[0.94rem] tracking-[0.16px] text-[#4e4e4e]">
+                    <p className="mt-2 leading-7 text-[0.94rem] tracking-[0.16px] text-graphite">
                       {dimension.detailBody}
                     </p>
                   </details>

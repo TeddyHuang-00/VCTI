@@ -19,6 +19,10 @@ export type {
   ChoiceQuestion,
   DimensionDescriptor,
   DimensionId,
+  EasterEggCode,
+  PersonalityCode,
   PersonalityProfile,
   Question,
+  ResultCode,
 } from "@/domain/vcti/types";
+export { EASTER_EGG_CODES, PERSONALITY_CODES } from "@/domain/vcti/types";

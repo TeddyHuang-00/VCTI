@@ -15,12 +15,8 @@ interface VctiAppProps {
 }
 
 function getTone(optionValue: number) {
-  if (optionValue < 0) {
-    return "bg-[#d95c4f] text-[#b04439]";
-  }
-  if (optionValue > 0) {
-    return "bg-[#4e9a67] text-[#3f7d54]";
-  }
+  if (optionValue < 0) return "bg-[#d95c4f] text-[#b04439]";
+  if (optionValue > 0) return "bg-[#4e9a67] text-[#3f7d54]";
   return "bg-[#d9d5d0] text-[#7f7a73]";
 }
 
@@ -34,7 +30,6 @@ function getDotSize(optionValue: number) {
     "2": "h-5 w-5",
     "3": "h-6 w-6",
   };
-
   return sizeMap[optionValue] ?? "h-4 w-4";
 }
 
@@ -47,7 +42,7 @@ function LikertDots({
 }) {
   return (
     <div className="space-y-4">
-      <div className="flex gap-4 justify-between items-center text-[12px] tracking-[0.14px] text-[#777169]">
+      <div className="flex gap-4 justify-between items-center text-[12px] tracking-[0.14px] text-warmgray">
         <span>不认同</span>
         <span>认同</span>
       </div>
@@ -74,7 +69,7 @@ function LikertDots({
               </span>
               <span
                 className={`text-center text-[11px] leading-4 tracking-[0.14px] ${
-                  selected ? "text-black" : "text-[#777169]"
+                  selected ? "text-black" : "text-warmgray"
                 }`}
               >
                 {option.label}
@@ -101,10 +96,7 @@ export default function VctiApp({ basePath = "/" }: VctiAppProps) {
   );
 
   useEffect(() => {
-    if (!state.completed || !result || typeof window === "undefined") {
-      return;
-    }
-
+    if (!state.completed || !result || typeof window === "undefined") return;
     window.location.assign(
       `${basePath}result/${result.code.toLowerCase()}?${serializeDimensionScores(result)}`
     );
@@ -113,7 +105,7 @@ export default function VctiApp({ basePath = "/" }: VctiAppProps) {
   return (
     <div className="px-4 pt-8 pb-16 mx-auto max-w-6xl sm:px-6 lg:px-8 lg:pt-10 lg:pb-24">
       <section className="space-y-5 max-w-[42rem]">
-        <div className="inline-flex py-2 px-4 font-medium text-black uppercase rounded-full ring-1 bg-[rgba(245,242,239,0.8)] text-[12px] tracking-[0.7px] shadow-[rgba(78,50,23,0.04)_0px_6px_16px] ring-[rgba(0,0,0,0.06)]">
+        <div className="inline-flex py-2 px-4 font-medium text-black uppercase rounded-full ring-1 bg-stone/80 text-[12px] tracking-[0.7px] shadow-warm ring-black/5">
           VCTI
         </div>
         <h1 className="font-light text-black font-display text-[3rem] leading-[1.08] tracking-[-0.96px] sm:text-[4.4rem]">
@@ -121,15 +113,15 @@ export default function VctiApp({ basePath = "/" }: VctiAppProps) {
           <br />
           Type Indicator
         </h1>
-        <p className="max-w-2xl text-[1.05rem] leading-[1.6] tracking-[0.18px] text-[#4e4e4e]">
+        <p className="max-w-2xl text-[1.05rem] leading-[1.6] tracking-[0.18px] text-graphite">
           识别你在 AI 依赖度、技术认知深度、验证态度与交付驱动上的编码倾向。
         </p>
       </section>
 
-      <section className="p-5 mt-12 bg-white sm:p-7 rounded-[24px] shadow-[rgba(0,0,0,0.06)_0px_0px_0px_1px,rgba(0,0,0,0.04)_0px_4px_4px]">
+      <section className="p-5 mt-12 bg-white sm:p-7 rounded-[24px] shadow-card">
         <div className="flex gap-4 justify-between items-center">
           <div>
-            <div className="text-[12px] tracking-[0.14px] text-[#777169]">Questionnaire</div>
+            <div className="text-[12px] tracking-[0.14px] text-warmgray">Questionnaire</div>
             <h2 className="mt-2 font-light text-black font-display text-[2rem] leading-[1.15]">
               完成 20 道核心量表
             </h2>
@@ -137,7 +129,7 @@ export default function VctiApp({ basePath = "/" }: VctiAppProps) {
           <button
             type="button"
             onClick={() => dispatch({ type: "restart" })}
-            className="py-2 px-4 font-medium text-black rounded-full ring-1 bg-[rgba(245,242,239,0.8)] text-[0.94rem] shadow-[rgba(78,50,23,0.04)_0px_6px_16px] ring-[rgba(0,0,0,0.06)]"
+            className="py-2 px-4 font-medium text-black rounded-full ring-1 bg-stone/80 text-[0.94rem] shadow-warm ring-black/5"
           >
             重置
           </button>
@@ -151,15 +143,15 @@ export default function VctiApp({ basePath = "/" }: VctiAppProps) {
         </div>
 
         <div className="flex gap-3 justify-between items-center mt-6">
-          <div className="py-2 px-4 rounded-full bg-[#f5f5f5] text-[13px] tracking-[0.14px] text-[#4e4e4e] shadow-[rgba(0,0,0,0.075)_0px_0px_0px_0.5px_inset]">
+          <div className="py-2 px-4 rounded-full bg-sand text-[13px] tracking-[0.14px] text-graphite shadow-inset-border">
             Q{state.currentIndex + 1} / {state.questionOrder.length}
           </div>
-          <div className="text-[13px] tracking-[0.14px] text-[#777169]">
+          <div className="text-[13px] tracking-[0.14px] text-warmgray">
             {progress.answered} 已回答
           </div>
         </div>
 
-        <article className="p-5 mt-6 sm:p-7 rounded-[24px] bg-[#f6f6f6] shadow-[rgba(0,0,0,0.075)_0px_0px_0px_0.5px_inset]">
+        <article className="p-5 mt-6 sm:p-7 rounded-[24px] bg-mist shadow-inset-border">
           <p className="mt-3 text-black text-[1.12rem] leading-[1.65] tracking-[0.18px]">
             {currentQuestion.prompt}
           </p>
@@ -183,7 +175,7 @@ export default function VctiApp({ basePath = "/" }: VctiAppProps) {
             type="button"
             onClick={() => dispatch({ type: "prev" })}
             disabled={state.currentIndex === 0}
-            className="py-3 px-5 font-medium text-black bg-white rounded-full disabled:opacity-40 disabled:cursor-not-allowed text-[0.94rem] shadow-[rgba(0,0,0,0.4)_0px_0px_1px,rgba(0,0,0,0.04)_0px_4px_4px]"
+            className="py-3 px-5 font-medium text-black bg-white rounded-full disabled:opacity-40 disabled:cursor-not-allowed text-[0.94rem] shadow-btn-white"
           >
             上一题
           </button>

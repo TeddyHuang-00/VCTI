@@ -1,29 +1,15 @@
 import { dimensions, MAX_REACHABLE_POSTERIOR } from "@/domain/vcti";
 import type { AssessmentResult, DimensionId } from "@/domain/vcti/types";
+import { DIMENSION_COLORS, withAlpha } from "@/lib/colors";
+import { clamp } from "@/lib/utils";
 
 const UNCERTAINTY_SPREAD = 0.35;
 const BAR_SIDE_PADDING_PX = 3;
 const BAR_SOLID_HEIGHT_PX = 10;
 const BAR_UNCERTAINTY_HEIGHT_PX = 8;
 
-const shareColors: Record<DimensionId, { left: string; right: string }> = {
-  MA: { left: "#c44a3a", right: "#2581c4" },
-  DV: { left: "#4e79a7", right: "#d37c31" },
-  RJ: { left: "#3c9977", right: "#b05693" },
-  CP: { left: "#745ec4", right: "#b08e3e" },
-};
-
 function tone(dimensionId: DimensionId, leaning: "left" | "right", alpha = 1) {
-  const color = shareColors[dimensionId][leaning];
-  if (alpha === 1) {
-    return color;
-  }
-
-  const hex = color.replace("#", "");
-  const red = Number.parseInt(hex.slice(0, 2), 16);
-  const green = Number.parseInt(hex.slice(2, 4), 16);
-  const blue = Number.parseInt(hex.slice(4, 6), 16);
-  return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
+  return withAlpha(DIMENSION_COLORS[dimensionId][leaning], alpha);
 }
 
 function splitWords(value: string, maxChars: number) {
@@ -41,15 +27,8 @@ function splitWords(value: string, maxChars: number) {
     }
   }
 
-  if (current) {
-    lines.push(current);
-  }
-
+  if (current) lines.push(current);
   return lines;
-}
-
-function clamp(value: number, min: number, max: number) {
-  return Math.min(max, Math.max(min, value));
 }
 
 function getUncertaintyRange(posterior: number) {
@@ -102,9 +81,7 @@ function splitChars(value: string, maxChars: number) {
       current = "";
     }
   }
-  if (current) {
-    lines.push(current);
-  }
+  if (current) lines.push(current);
   return lines;
 }
 
