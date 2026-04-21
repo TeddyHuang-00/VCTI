@@ -13,6 +13,7 @@ export type QuestionnaireAction =
   | { type: "start" }
   | { type: "answer"; questionId: string; value: number }
   | { type: "prev" }
+  | { type: "next" }
   | { type: "restart"; seed?: number }
   | { type: "jump"; index: number };
 
@@ -69,6 +70,10 @@ export function questionnaireReducer(
         ...state,
         currentIndex: Math.max(state.currentIndex - 1, 0),
       };
+    case "next": {
+      if (state.currentIndex >= state.questionOrder.length - 1) return state;
+      return { ...state, currentIndex: state.currentIndex + 1 };
+    }
     case "restart":
       return createInitialQuestionnaireState(action.seed);
     case "jump":

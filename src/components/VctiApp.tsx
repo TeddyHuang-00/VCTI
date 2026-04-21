@@ -114,16 +114,16 @@ export default function VctiApp({ basePath = "/" }: VctiAppProps) {
           Type Indicator
         </h1>
         <p className="max-w-2xl text-[1.05rem] leading-[1.6] tracking-[0.18px] text-graphite">
-          识别你在 AI 依赖度、技术认知深度、验证态度与交付驱动上的编码倾向。
+          22 道题，5 分钟，破译你的编程人格暗码。
         </p>
       </section>
 
       <section className="p-5 mt-12 bg-white sm:p-7 rounded-[24px] shadow-card">
         <div className="flex gap-4 justify-between items-center">
           <div>
-            <div className="text-[12px] tracking-[0.14px] text-warmgray">Questionnaire</div>
+            <div className="text-[12px] tracking-[0.14px] text-warmgray">VCTI 量表</div>
             <h2 className="mt-2 font-light text-black font-display text-[2rem] leading-[1.15]">
-              完成 20 道核心量表
+              回答下列陈述
             </h2>
           </div>
           <button
@@ -147,7 +147,7 @@ export default function VctiApp({ basePath = "/" }: VctiAppProps) {
             Q{state.currentIndex + 1} / {state.questionOrder.length}
           </div>
           <div className="text-[13px] tracking-[0.14px] text-warmgray">
-            {progress.answered} 已回答
+            {progress.answered} / {progress.total} 题
           </div>
         </div>
 
@@ -178,6 +178,16 @@ export default function VctiApp({ basePath = "/" }: VctiAppProps) {
             className="py-3 px-5 font-medium text-black bg-white rounded-full disabled:opacity-40 disabled:cursor-not-allowed text-[0.94rem] shadow-btn-white"
           >
             上一题
+          </button>
+          <button
+            type="button"
+            onClick={() => dispatch({ type: "next" })}
+            disabled={
+              currentValue === undefined || state.currentIndex >= state.questionOrder.length - 1
+            }
+            className="py-3 px-5 font-medium text-black bg-white rounded-full disabled:opacity-40 disabled:cursor-not-allowed text-[0.94rem] shadow-btn-white"
+          >
+            下一题
           </button>
         </div>
       </section>

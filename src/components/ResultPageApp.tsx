@@ -57,20 +57,20 @@ function ActionButtons({
         onClick={onSaveImage}
         className="py-3 px-5 font-medium text-black rounded-full ring-1 bg-stone/80 text-[0.94rem] shadow-warm ring-black/5"
       >
-        {saving ? "正在生成截图" : "保存结果截图"}
+        {saving ? "生成中……" : "保存结果图"}
       </button>
       <button
         type="button"
         onClick={onCopyLink}
         className="py-3 px-5 font-medium text-white bg-black rounded-full text-[0.94rem]"
       >
-        {copied ? "已复制分享链接" : "复制分享链接"}
+        {copied ? "链接已复制" : "复制分享链接"}
       </button>
       <a
         href={basePath}
         className="py-2 px-4 font-medium text-black rounded-full ring-1 bg-stone/80 text-[0.94rem] shadow-warm ring-black/5"
       >
-        重新测试
+        再测一次
       </a>
     </div>
   );
@@ -131,10 +131,10 @@ export default function ResultPageApp({
       <div className="px-4 pt-10 pb-16 mx-auto max-w-4xl sm:px-6 lg:px-8">
         <div className="p-8 text-center bg-white rounded-[24px] shadow-card">
           <h1 className="font-light text-black font-display text-[3rem] tracking-[-0.8px]">
-            无法解析结果
+            链接已失效
           </h1>
           <p className="mt-4 leading-7 text-[1rem] tracking-[0.16px] text-graphite">
-            当前链接缺少四维分数参数。请返回首页完成问卷后重新生成分享链接。
+            这个结果链接不完整，请重新完成测评以生成你的专属结果。
           </p>
           <a
             href={basePath}
@@ -151,9 +151,9 @@ export default function ResultPageApp({
     <div className="px-4 pt-8 pb-12 mx-auto max-w-6xl sm:px-6 lg:px-8 lg:pt-10 lg:pb-20">
       <div className="flex gap-4 justify-between items-center mb-8">
         <div>
-          <div className="text-[12px] tracking-[0.14px] text-warmgray">VCTI Result</div>
+          <div className="text-[12px] tracking-[0.14px] text-warmgray">你的编码人格</div>
           <p className="mt-2 leading-7 text-[1rem] tracking-[0.16px] text-graphite">
-            你的 vibe coder 人格已经生成，保存或转发这张结果页就能直接分享。
+            保存图片或复制链接，把你的 VCTI 人格发给同僚。
           </p>
         </div>
         <ActionButtons
