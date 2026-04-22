@@ -113,7 +113,7 @@ export function getUncertaintyRange(normalized: number, variance: number) {
   const posteriorVar = getPosteriorVariance(variance);
   const posteriorSD = Math.sqrt(posteriorVar);
   const normalizedSD = shrinkFactor === 0 ? 0 : posteriorSD / shrinkFactor;
-  const spread = (2 * normalizedSD) / MAX_REACHABLE_POSTERIOR;
+  const spread = normalizedSD / MAX_REACHABLE_POSTERIOR;
   return {
     start: purity - spread,
     end: purity + spread,
