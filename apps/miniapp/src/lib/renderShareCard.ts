@@ -78,15 +78,25 @@ function drawBar(
   ctx.fillStyle = "#c9c4be";
   ctx.fillRect(midX - 0.5, y, 1, trackH);
 
-  // Uncertainty bar — range.start can be negative (extends to both sides of center)
+  // Uncertainty bar
   const uy = y + (trackH - BAR_UH) / 2;
-  const rawUx = x + half + range.start * half;
-  const rawUw = (range.end - range.start) * half;
-  const minUx = x + UNCERTAINTY_TRACK_INSET;
-  const maxUx = x + w - UNCERTAINTY_TRACK_INSET;
-  const clampedUx = Math.max(minUx, rawUx);
-  const clampedUw = Math.min(maxUx, rawUx + rawUw) - clampedUx;
-  fillRR(ctx, clampedUx, uy, clampedUw, BAR_UH, BAR_UH / 2, tone(dimId, leaning, 0.26));
+  if (leaning === "left") {
+    const rawUx = x + half - range.end * half;
+    const rawUw = (range.end - range.start) * half;
+    const minUx = x + UNCERTAINTY_TRACK_INSET;
+    const maxUx = x + w - UNCERTAINTY_TRACK_INSET;
+    const clampedUx = Math.max(minUx, rawUx);
+    const clampedUw = Math.min(maxUx, rawUx + rawUw) - clampedUx;
+    fillRR(ctx, clampedUx, uy, clampedUw, BAR_UH, BAR_UH / 2, tone(dimId, leaning, 0.26));
+  } else {
+    const rawUx = x + half + range.start * half;
+    const rawUw = (range.end - range.start) * half;
+    const minUx = x + UNCERTAINTY_TRACK_INSET;
+    const maxUx = x + w - UNCERTAINTY_TRACK_INSET;
+    const clampedUx = Math.max(minUx, rawUx);
+    const clampedUw = Math.min(maxUx, rawUx + rawUw) - clampedUx;
+    fillRR(ctx, clampedUx, uy, clampedUw, BAR_UH, BAR_UH / 2, tone(dimId, leaning, 0.26));
+  }
 
   // Solid bar — when width < height, draw a centered circle instead
   const sy = y + (trackH - BAR_SH) / 2;
