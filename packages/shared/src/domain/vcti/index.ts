@@ -13,6 +13,7 @@ export {
   parseResultCodeFromQuery,
   serializeDimensionScores,
 } from "./scoring";
+export type { ParsedDimensionScores } from "./scoring";
 export type {
   AnswerMap,
   AssessmentResult,

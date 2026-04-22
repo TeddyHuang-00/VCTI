@@ -95,6 +95,8 @@ export interface DimensionScore {
   leaning: "left" | "right";
   letter: string;
   isNeutral: boolean;
+  /** Sample variance of the individual answer contributions for this dimension. */
+  variance: number;
 }
 
 export interface AssessmentResult {

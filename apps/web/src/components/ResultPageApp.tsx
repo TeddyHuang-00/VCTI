@@ -97,8 +97,9 @@ export default function ResultPageApp({
     const parsed = parseDimensionScoresFromQuery(searchParams);
     if (!parsed) return null;
     return calculateAssessmentFromDimensionPosteriors(
-      parsed,
-      initialCode ?? parseResultCodeFromQuery(searchParams)
+      parsed.posteriors,
+      initialCode ?? parseResultCodeFromQuery(searchParams),
+      parsed.variances
     );
   }, [initialCode]);
 

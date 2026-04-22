@@ -1,9 +1,7 @@
 import { dimensions, MAX_REACHABLE_POSTERIOR } from "@vcti/shared/domain/vcti";
 import type { AssessmentResult, DimensionId } from "@vcti/shared/domain/vcti/types";
 import { DIMENSION_COLORS, withAlpha, withSaturation } from "@vcti/shared/lib/colors";
-import { clamp } from "@vcti/shared/lib/utils";
 
-const UNCERTAINTY_SPREAD = 0.35;
 const BAR_SIDE_PADDING_PX = 3;
 const BAR_SOLID_HEIGHT_PX = 10;
 const BAR_UNCERTAINTY_HEIGHT_PX = 8;
@@ -12,12 +10,17 @@ function toPercent(value: number) {
   return Math.round(value * 100);
 }
 
-function getUncertaintyRange(posterior: number) {
-  const center = clamp(Math.abs(posterior) / MAX_REACHABLE_POSTERIOR, 0, 1);
-  const spread = UNCERTAINTY_SPREAD / MAX_REACHABLE_POSTERIOR;
+function getUncertaintyRange(posterior: number, variance: number) {
+  const purity = Math.abs(posterior) / MAX_REACHABLE_POSTERIOR;
+  const n = 5;
+  const obsVarFloor = 0.1;
+  const obsVar = Math.max(variance, obsVarFloor);
+  const posteriorVar = 1 / (1 + n / obsVar);
+  const posteriorSD = Math.sqrt(posteriorVar);
+  const spread = posteriorSD / MAX_REACHABLE_POSTERIOR;
   return {
-    start: clamp(center - spread, 0, 1),
-    end: clamp(center + spread, 0, 1),
+    start: purity - spread,
+    end: purity + spread,
   };
 }
 
@@ -49,17 +52,27 @@ function DimensionBar({
   posterior,
   purity,
   leaning,
+  variance,
 }: {
   dimensionId: DimensionId;
   posterior: number;
   purity: number;
   leaning: "left" | "right";
+  variance: number;
 }) {
   const position = toBarPosition(posterior);
-  const uncertaintyRange = getUncertaintyRange(posterior);
+  const uncertaintyRange = getUncertaintyRange(posterior, variance);
   const uncertaintyStart = uncertaintyRange.start * 50;
   const uncertaintyEnd = uncertaintyRange.end * 50;
-  const solidStyle = buildBarStyle(leaning, 0, position, BAR_SOLID_HEIGHT_PX / 2);
+
+  const isCircle = position < BAR_SOLID_HEIGHT_PX / 2;
+  const solidStyle = isCircle
+    ? {
+        left: `calc(50% - ${BAR_SOLID_HEIGHT_PX / 2}px)`,
+        width: `${BAR_SOLID_HEIGHT_PX}px`,
+      }
+    : buildBarStyle(leaning, 0, position, BAR_SOLID_HEIGHT_PX / 2);
+
   const uncertaintyStyle = buildBarStyle(
     leaning,
     uncertaintyStart,
@@ -168,6 +181,7 @@ export default function ResultSummary({
                     posterior={score.posterior}
                     purity={score.purity}
                     leaning={score.leaning}
+                    variance={score.variance}
                   />
 
                   <div className="flex justify-between items-center mt-3 text-[12px] tracking-[0.14px] text-warmgray">

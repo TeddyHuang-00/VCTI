@@ -1,9 +1,7 @@
 import { dimensions, MAX_REACHABLE_POSTERIOR } from "@vcti/shared/domain/vcti";
 import type { AssessmentResult, DimensionId } from "@vcti/shared/domain/vcti/types";
 import { DIMENSION_COLORS, withAlpha } from "@vcti/shared/lib/colors";
-import { clamp } from "@vcti/shared/lib/utils";
 
-const UNCERTAINTY_SPREAD = 0.35;
 const BAR_SIDE_PADDING_PX = 3;
 const BAR_SOLID_HEIGHT_PX = 10;
 const BAR_UNCERTAINTY_HEIGHT_PX = 8;
@@ -31,12 +29,17 @@ function splitWords(value: string, maxChars: number) {
   return lines;
 }
 
-function getUncertaintyRange(posterior: number) {
-  const center = clamp(Math.abs(posterior) / MAX_REACHABLE_POSTERIOR, 0, 1);
-  const spread = UNCERTAINTY_SPREAD / MAX_REACHABLE_POSTERIOR;
+function getUncertaintyRange(posterior: number, variance: number) {
+  const purity = Math.abs(posterior) / MAX_REACHABLE_POSTERIOR;
+  const n = 5;
+  const obsVarFloor = 0.1;
+  const obsVar = Math.max(variance, obsVarFloor);
+  const posteriorVar = 1 / (1 + n / obsVar);
+  const posteriorSD = Math.sqrt(posteriorVar);
+  const spread = posteriorSD / MAX_REACHABLE_POSTERIOR;
   return {
-    start: clamp(center - spread, 0, 1),
-    end: clamp(center + spread, 0, 1),
+    start: purity - spread,
+    end: purity + spread,
   };
 }
 
@@ -44,28 +47,33 @@ function barGeometry(
   leaning: "left" | "right",
   purity: number,
   posterior: number,
-  trackWidth: number
+  trackWidth: number,
+  variance: number
 ) {
   const innerTrackWidth = trackWidth - BAR_SIDE_PADDING_PX * 2;
   const half = innerTrackWidth / 2;
-  const position = purity * 50;
-  const fillWidth = half * (position / 50);
-  const uncertaintyRange = getUncertaintyRange(posterior);
+  const fillPixels = half * purity;
+  const uncertaintyRange = getUncertaintyRange(posterior, variance);
   const uncertaintyStart = uncertaintyRange.start * half;
   const uncertaintyEnd = uncertaintyRange.end * half;
 
-  if (leaning === "left") {
-    return {
-      fillLeft: BAR_SIDE_PADDING_PX + (half - fillWidth),
-      fillWidth: fillWidth + BAR_SOLID_HEIGHT_PX / 2,
-      uncertaintyLeft: BAR_SIDE_PADDING_PX + (half - uncertaintyEnd),
-      uncertaintyWidth: uncertaintyEnd - uncertaintyStart + BAR_UNCERTAINTY_HEIGHT_PX / 2,
-    };
+  // When the bar would be narrower than its height, draw a centered circle instead.
+  let fillLeft: number;
+  let fillWidth: number;
+  if (fillPixels < BAR_SOLID_HEIGHT_PX / 2) {
+    fillLeft = BAR_SIDE_PADDING_PX + half - BAR_SOLID_HEIGHT_PX / 2;
+    fillWidth = BAR_SOLID_HEIGHT_PX;
+  } else if (leaning === "left") {
+    fillLeft = BAR_SIDE_PADDING_PX + (half - fillPixels);
+    fillWidth = fillPixels + BAR_SOLID_HEIGHT_PX / 2;
+  } else {
+    fillLeft = BAR_SIDE_PADDING_PX + half - BAR_SOLID_HEIGHT_PX / 2;
+    fillWidth = fillPixels + BAR_SOLID_HEIGHT_PX / 2;
   }
 
   return {
-    fillLeft: BAR_SIDE_PADDING_PX + half - BAR_SOLID_HEIGHT_PX / 2,
-    fillWidth: fillWidth + BAR_SOLID_HEIGHT_PX / 2,
+    fillLeft,
+    fillWidth,
     uncertaintyLeft: BAR_SIDE_PADDING_PX + half + uncertaintyStart - BAR_UNCERTAINTY_HEIGHT_PX / 2,
     uncertaintyWidth: uncertaintyEnd - uncertaintyStart + BAR_UNCERTAINTY_HEIGHT_PX / 2,
   };
@@ -296,7 +304,7 @@ export default function ShareCardTemplate({
         >
           {dimensions.map((dimension, index) => {
             const score = result.dimensionScores[dimension.id];
-            const geometry = barGeometry(score.leaning, score.purity, score.posterior, trackWidth);
+            const geometry = barGeometry(score.leaning, score.purity, score.posterior, trackWidth, score.variance);
             return (
               <div
                 key={dimension.id}

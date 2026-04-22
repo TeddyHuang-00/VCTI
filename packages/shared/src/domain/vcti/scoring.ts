@@ -1,5 +1,6 @@
 import { clamp } from "../../lib/utils";
 import { dimensions, personalityProfiles, questions } from "./data";
+import { DIMENSIONS } from "./types";
 import type {
   AnswerMap,
   AssessmentResult,
@@ -49,7 +50,8 @@ function assembleDimensionScore(
   id: DimensionId,
   raw: number,
   normalized: number,
-  posterior: number
+  posterior: number,
+  variance: number
 ): DimensionScore {
   const descriptor = dimensions.find((d) => d.id === id);
   if (!descriptor) {
@@ -61,17 +63,21 @@ function assembleDimensionScore(
   const letter = leaning === "left" ? descriptor.leftLetter : descriptor.rightLetter;
   const isNeutral = Math.abs(posterior) < NEUTRAL_THRESHOLD;
 
-  return { id, raw, normalized, posterior, purity, leaning, letter, isNeutral };
+  return { id, raw, normalized, posterior, purity, leaning, letter, isNeutral, variance };
 }
 
-function buildDimensionScore(id: DimensionId, raw: number): DimensionScore {
+function buildDimensionScore(id: DimensionId, raw: number, variance: number): DimensionScore {
   const normalized = clamp((raw / SCALE_MAX) * NORMALIZED_RANGE, -2, 2);
   const posterior =
     normalized / OBSERVATION_VARIANCE / (1 / PRIOR_VARIANCE + 1 / OBSERVATION_VARIANCE);
-  return assembleDimensionScore(id, raw, normalized, posterior);
+  return assembleDimensionScore(id, raw, normalized, posterior, variance);
 }
 
-function buildDimensionScoreFromPosterior(id: DimensionId, posteriorInput: number): DimensionScore {
+function buildDimensionScoreFromPosterior(
+  id: DimensionId,
+  posteriorInput: number,
+  variance = 1.0
+): DimensionScore {
   const posterior = clamp(posteriorInput, -2, 2);
   const normalized = clamp(
     posterior * (1 / PRIOR_VARIANCE + 1 / OBSERVATION_VARIANCE) * OBSERVATION_VARIANCE,
@@ -79,7 +85,7 @@ function buildDimensionScoreFromPosterior(id: DimensionId, posteriorInput: numbe
     2
   );
   const raw = clamp(Math.round((normalized / NORMALIZED_RANGE) * SCALE_MAX), -SCALE_MAX, SCALE_MAX);
-  return assembleDimensionScore(id, raw, normalized, posterior);
+  return assembleDimensionScore(id, raw, normalized, posterior, variance);
 }
 
 function getPrimaryCode(scores: Record<DimensionId, DimensionScore>): PersonalityCode {
@@ -155,29 +161,33 @@ function detectEasterEggFromPosteriors(
 }
 
 function buildDimensionScores(
-  rawScores: Record<DimensionId, number>
+  rawScores: Record<DimensionId, number>,
+  variances: Record<DimensionId, number>
 ): Record<DimensionId, DimensionScore> {
   return {
-    MA: buildDimensionScore("MA", rawScores.MA),
-    DV: buildDimensionScore("DV", rawScores.DV),
-    RJ: buildDimensionScore("RJ", rawScores.RJ),
-    CP: buildDimensionScore("CP", rawScores.CP),
+    MA: buildDimensionScore("MA", rawScores.MA, variances.MA),
+    DV: buildDimensionScore("DV", rawScores.DV, variances.DV),
+    RJ: buildDimensionScore("RJ", rawScores.RJ, variances.RJ),
+    CP: buildDimensionScore("CP", rawScores.CP, variances.CP),
   };
 }
 
 function buildDimensionScoresFromPosteriors(
-  posteriors: Record<DimensionId, number>
+  posteriors: Record<DimensionId, number>,
+  variances?: Record<DimensionId, number>
 ): Record<DimensionId, DimensionScore> {
   return {
-    MA: buildDimensionScoreFromPosterior("MA", posteriors.MA),
-    DV: buildDimensionScoreFromPosterior("DV", posteriors.DV),
-    RJ: buildDimensionScoreFromPosterior("RJ", posteriors.RJ),
-    CP: buildDimensionScoreFromPosterior("CP", posteriors.CP),
+    MA: buildDimensionScoreFromPosterior("MA", posteriors.MA, variances?.MA),
+    DV: buildDimensionScoreFromPosterior("DV", posteriors.DV, variances?.DV),
+    RJ: buildDimensionScoreFromPosterior("RJ", posteriors.RJ, variances?.RJ),
+    CP: buildDimensionScoreFromPosterior("CP", posteriors.CP, variances?.CP),
   };
 }
 
 export function calculateAssessment(answers: AnswerMap): AssessmentResult {
   const rawScores: Record<DimensionId, number> = { MA: 0, DV: 0, RJ: 0, CP: 0 };
+  const sumSquares: Record<DimensionId, number> = { MA: 0, DV: 0, RJ: 0, CP: 0 };
+  const answerCounts: Record<DimensionId, number> = { MA: 0, DV: 0, RJ: 0, CP: 0 };
   let answeredExtremes = 0;
 
   for (const [questionId, answer] of Object.entries(answers)) {
@@ -190,10 +200,24 @@ export function calculateAssessment(answers: AnswerMap): AssessmentResult {
     const contribution = getContribution(questionId, answer);
     if (contribution) {
       rawScores[contribution.dimension] += contribution.score;
+      sumSquares[contribution.dimension] += contribution.score * contribution.score;
+      answerCounts[contribution.dimension] += 1;
     }
   }
 
-  const dimensionScores = buildDimensionScores(rawScores);
+  // Sample variance of answer contributions per dimension.
+  // When answers are consistent (all same direction/magnitude), variance is low →
+  // narrow uncertainty. When answers are mixed, variance is high → wide uncertainty.
+  const variances: Record<DimensionId, number> = { MA: 0, DV: 0, RJ: 0, CP: 0 };
+  for (const dim of DIMENSIONS) {
+    const n = answerCounts[dim];
+    if (n > 1) {
+      const mean = rawScores[dim] / n;
+      variances[dim] = (sumSquares[dim] - n * mean * mean) / (n - 1);
+    }
+  }
+
+  const dimensionScores = buildDimensionScores(rawScores, variances);
   const primaryCode = getPrimaryCode(dimensionScores);
   const easterEggCode = detectEasterEgg(dimensionScores, answers, answeredExtremes);
   const code = easterEggCode ?? primaryCode;
@@ -221,9 +245,10 @@ export function calculateAssessment(answers: AnswerMap): AssessmentResult {
 
 export function calculateAssessmentFromDimensionPosteriors(
   posteriors: Record<DimensionId, number>,
-  forcedCode?: ResultCode | null
+  forcedCode?: ResultCode | null,
+  variances?: Record<DimensionId, number>
 ): AssessmentResult {
-  const dimensionScores = buildDimensionScoresFromPosteriors(posteriors);
+  const dimensionScores = buildDimensionScoresFromPosteriors(posteriors, variances);
   const primaryCode = getPrimaryCode(dimensionScores);
   const derivedCode = detectEasterEggFromPosteriors(dimensionScores) ?? primaryCode;
   const code: ResultCode = forcedCode && personalityProfiles[forcedCode] ? forcedCode : derivedCode;
@@ -250,9 +275,10 @@ export function calculateAssessmentFromDimensionPosteriors(
 export function serializeDimensionScores(result: AssessmentResult): string {
   const params = new URLSearchParams();
   for (const dimension of dimensions) {
+    const score = result.dimensionScores[dimension.id];
     params.set(
       QUERY_PARAM_KEYS[dimension.id],
-      result.dimensionScores[dimension.id].posterior.toFixed(SHARE_PRECISION)
+      `${score.posterior.toFixed(SHARE_PRECISION)},${score.variance.toFixed(SHARE_PRECISION)}`
     );
   }
   if (result.code !== result.primaryCode) {
@@ -261,18 +287,31 @@ export function serializeDimensionScores(result: AssessmentResult): string {
   return params.toString();
 }
 
+export interface ParsedDimensionScores {
+  posteriors: Record<DimensionId, number>;
+  variances: Record<DimensionId, number>;
+}
+
 export function parseDimensionScoresFromQuery(
   searchParams: URLSearchParams
-): Record<DimensionId, number> | null {
-  const values: Partial<Record<DimensionId, number>> = {};
+): ParsedDimensionScores | null {
+  const posteriors: Partial<Record<DimensionId, number>> = {};
+  const variances: Partial<Record<DimensionId, number>> = {};
   for (const dimension of dimensions) {
     const rawValue = searchParams.get(QUERY_PARAM_KEYS[dimension.id]);
     if (rawValue === null) return null;
-    const parsed = Number(rawValue);
-    if (Number.isNaN(parsed)) return null;
-    values[dimension.id] = clamp(parsed, -2, 2);
+    const parts = rawValue.split(",");
+    const posterior = Number(parts[0]);
+    if (Number.isNaN(posterior)) return null;
+    posteriors[dimension.id] = clamp(posterior, -2, 2);
+    // Variance is the second component; default to 1.0 for old-format URLs
+    const variance = parts.length > 1 ? Number(parts[1]) : 1.0;
+    variances[dimension.id] = Number.isNaN(variance) ? 1.0 : Math.max(0, variance);
   }
-  return values as Record<DimensionId, number>;
+  return {
+    posteriors: posteriors as Record<DimensionId, number>,
+    variances: variances as Record<DimensionId, number>,
+  };
 }
 
 export function parseResultCodeFromQuery(searchParams: URLSearchParams): ResultCode | null {
