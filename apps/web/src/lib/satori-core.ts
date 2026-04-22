@@ -1,5 +1,4 @@
 import { initWasm, Resvg } from "@resvg/resvg-wasm";
-import type { ReactNode } from "react";
 import satori, { init as initSatori } from "satori/standalone";
 
 export interface SatoriFont {
@@ -22,7 +21,7 @@ export function initSatoriEngine(yogaWasm: Uint8Array, resvgWasm: Uint8Array): P
 }
 
 export async function renderSatoriToPng(
-  element: ReactNode,
+  element: Parameters<typeof satori>[0],
   options: { width: number; height: number; fonts: SatoriFont[] },
   resvgOptions: ConstructorParameters<typeof Resvg>[1] = {}
 ): Promise<Uint8Array> {
