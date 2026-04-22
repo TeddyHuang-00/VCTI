@@ -1,4 +1,4 @@
-import { dimensions, MAX_REACHABLE_POSTERIOR } from "@vcti/shared/domain/vcti";
+import { dimensions, getUncertaintyRange, MAX_REACHABLE_POSTERIOR } from "@vcti/shared/domain/vcti";
 import type { AssessmentResult, DimensionId } from "@vcti/shared/domain/vcti/types";
 import { DIMENSION_COLORS, hexToRgb } from "@vcti/shared/lib/colors";
 
@@ -42,20 +42,6 @@ function fillRR(
 function tone(dim: DimensionId, side: "left" | "right", alpha: number): string {
   const [r, g, b] = hexToRgb(DIMENSION_COLORS[dim][side]);
   return `rgba(${r},${g},${b},${alpha})`;
-}
-
-function getUncertaintyRange(posterior: number, variance: number) {
-  const purity = Math.abs(posterior) / MAX_REACHABLE_POSTERIOR;
-  const n = 5;
-  const obsVarFloor = 0.1;
-  const obsVar = Math.max(variance, obsVarFloor);
-  const posteriorVar = 1 / (1 + n / obsVar);
-  const posteriorSD = Math.sqrt(posteriorVar);
-  const spread = posteriorSD / MAX_REACHABLE_POSTERIOR;
-  return {
-    start: purity - spread,
-    end: purity + spread,
-  };
 }
 
 function drawBar(

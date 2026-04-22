@@ -10,10 +10,10 @@ import type {
 } from "./types";
 import { DIMENSIONS } from "./types";
 
-const PRIOR_VARIANCE = 1;
-const OBSERVATION_VARIANCE = 0.5;
+export const PRIOR_VARIANCE = 0.3;
+export const N_QUESTIONS = 5;
+const OBS_VAR_FLOOR = 0.1;
 const SCALE_MAX = 15;
-const NORMALIZED_RANGE = 2;
 const NEUTRAL_THRESHOLD = 0.3;
 const HALL_DV_THRESHOLD = 1.05;
 const HALL_VIBE_INDEX_THRESHOLD = 0.85;
@@ -27,8 +27,8 @@ const QUERY_PARAM_KEYS: Record<DimensionId, string> = {
 };
 const RESULT_CODE_KEY = "code";
 
-const MAX_REACHABLE_POSTERIOR =
-  NORMALIZED_RANGE / OBSERVATION_VARIANCE / (1 / PRIOR_VARIANCE + 1 / OBSERVATION_VARIANCE);
+/** Maximum possible |posterior| = max |sample mean| when all 5 answers are ±3. */
+const MAX_REACHABLE_POSTERIOR = SCALE_MAX / N_QUESTIONS;
 
 const coreQuestions = questions.filter((q) => q.category === "core");
 const scoredQuestions = questions.filter((q) => q.category !== "scenario");
@@ -67,10 +67,12 @@ function assembleDimensionScore(
 }
 
 function buildDimensionScore(id: DimensionId, raw: number, variance: number): DimensionScore {
-  const normalized = clamp((raw / SCALE_MAX) * NORMALIZED_RANGE, -2, 2);
-  const posterior =
-    normalized / OBSERVATION_VARIANCE / (1 / PRIOR_VARIANCE + 1 / OBSERVATION_VARIANCE);
-  return assembleDimensionScore(id, raw, normalized, posterior, variance);
+  // Sample mean of the 5 answer contributions, range [-3, 3].
+  const mu = raw / N_QUESTIONS;
+  // Bayesian posterior mean: μ' = Nσ₀²/(Nσ₀² + s) · μ  (prior mean μ₀ = 0).
+  const s = Math.max(variance, OBS_VAR_FLOOR);
+  const posterior = ((N_QUESTIONS * PRIOR_VARIANCE) / (N_QUESTIONS * PRIOR_VARIANCE + s)) * mu;
+  return assembleDimensionScore(id, raw, mu, posterior, variance);
 }
 
 function buildDimensionScoreFromPosterior(
@@ -78,14 +80,28 @@ function buildDimensionScoreFromPosterior(
   posteriorInput: number,
   variance = 1.0
 ): DimensionScore {
-  const posterior = clamp(posteriorInput, -2, 2);
-  const normalized = clamp(
-    posterior * (1 / PRIOR_VARIANCE + 1 / OBSERVATION_VARIANCE) * OBSERVATION_VARIANCE,
-    -2,
-    2
-  );
-  const raw = clamp(Math.round((normalized / NORMALIZED_RANGE) * SCALE_MAX), -SCALE_MAX, SCALE_MAX);
-  return assembleDimensionScore(id, raw, normalized, posterior, variance);
+  const posterior = clamp(posteriorInput, -MAX_REACHABLE_POSTERIOR, MAX_REACHABLE_POSTERIOR);
+  // Invert the posterior mean formula to recover the sample mean.
+  const s = Math.max(variance, OBS_VAR_FLOOR);
+  const mu = (posterior * (N_QUESTIONS * PRIOR_VARIANCE + s)) / (N_QUESTIONS * PRIOR_VARIANCE);
+  const raw = clamp(Math.round(mu * N_QUESTIONS), -SCALE_MAX, SCALE_MAX);
+  return assembleDimensionScore(id, raw, mu, posterior, variance);
+}
+
+/**
+ * Compute the ±2σ uncertainty range around the posterior mean, in purity units [0, 1].
+ * The posterior variance is σ'² = 1 / (1/σ₀² + N/s) where s is the sample variance.
+ */
+export function getUncertaintyRange(posterior: number, variance: number) {
+  const purity = Math.abs(posterior) / MAX_REACHABLE_POSTERIOR;
+  const s = Math.max(variance, OBS_VAR_FLOOR);
+  const posteriorVar = 1 / (1 / PRIOR_VARIANCE + N_QUESTIONS / s);
+  const posteriorSD = Math.sqrt(posteriorVar);
+  const spread = (2 * posteriorSD) / MAX_REACHABLE_POSTERIOR;
+  return {
+    start: purity - spread,
+    end: purity + spread,
+  };
 }
 
 function getPrimaryCode(scores: Record<DimensionId, DimensionScore>): PersonalityCode {

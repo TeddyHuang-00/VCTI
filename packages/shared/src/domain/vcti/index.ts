@@ -9,7 +9,10 @@ export type { ParsedDimensionScores } from "./scoring";
 export {
   calculateAssessment,
   calculateAssessmentFromDimensionPosteriors,
+  getUncertaintyRange,
   MAX_REACHABLE_POSTERIOR,
+  N_QUESTIONS,
+  PRIOR_VARIANCE,
   parseDimensionScoresFromQuery,
   parseResultCodeFromQuery,
   serializeDimensionScores,

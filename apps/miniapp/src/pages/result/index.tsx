@@ -3,6 +3,7 @@ import Taro, { useShareAppMessage } from "@tarojs/taro";
 import {
   calculateAssessmentFromDimensionPosteriors,
   dimensions,
+  getUncertaintyRange,
   MAX_REACHABLE_POSTERIOR,
   parseDimensionScoresFromQuery,
   parseResultCodeFromQuery,
@@ -26,23 +27,6 @@ const BAR_UNCERTAINTY_TRACK_INSET_PX = CONTAINER_HEIGHT_PX / 2 - BAR_UNCERTAINTY
 
 function toPercent(value: number) {
   return Math.round(value * 100);
-}
-
-function getUncertaintyRange(posterior: number, variance: number) {
-  const purity = Math.abs(posterior) / MAX_REACHABLE_POSTERIOR;
-  // Bayesian posterior SD given estimated observation variance from the sample.
-  // Consistent answers → low variance → narrow uncertainty.
-  // Mixed answers → high variance → wide uncertainty.
-  const n = 5;
-  const obsVarFloor = 0.1;
-  const obsVar = Math.max(variance, obsVarFloor);
-  const posteriorVar = 1 / (1 + n / obsVar);
-  const posteriorSD = Math.sqrt(posteriorVar);
-  const spread = posteriorSD / MAX_REACHABLE_POSTERIOR;
-  return {
-    start: purity - spread,
-    end: purity + spread,
-  };
 }
 
 function buildBarStyle(leaning: "left" | "right", start: number, span: number, radiusPx: number) {

@@ -1,4 +1,4 @@
-import { dimensions, MAX_REACHABLE_POSTERIOR } from "@vcti/shared/domain/vcti";
+import { dimensions, getUncertaintyRange, MAX_REACHABLE_POSTERIOR } from "@vcti/shared/domain/vcti";
 import type { AssessmentResult, DimensionId } from "@vcti/shared/domain/vcti/types";
 import { DIMENSION_COLORS, withAlpha, withSaturation } from "@vcti/shared/lib/colors";
 
@@ -15,20 +15,6 @@ const BAR_UNCERTAINTY_TRACK_INSET_PX = CONTAINER_HEIGHT_PX / 2 - BAR_UNCERTAINTY
 
 function toPercent(value: number) {
   return Math.round(value * 100);
-}
-
-function getUncertaintyRange(posterior: number, variance: number) {
-  const purity = Math.abs(posterior) / MAX_REACHABLE_POSTERIOR;
-  const n = 5;
-  const obsVarFloor = 0.1;
-  const obsVar = Math.max(variance, obsVarFloor);
-  const posteriorVar = 1 / (1 + n / obsVar);
-  const posteriorSD = Math.sqrt(posteriorVar);
-  const spread = posteriorSD / MAX_REACHABLE_POSTERIOR;
-  return {
-    start: purity - spread,
-    end: purity + spread,
-  };
 }
 
 function toBarPosition(posterior: number) {
