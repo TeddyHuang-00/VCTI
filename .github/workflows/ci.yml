@@ -56,7 +56,11 @@ jobs:
         with:
           path: .cache/fonts
           key: cache-font-${{ steps.font-version.outputs.wenkai-version }}-${{ steps.font-version.outputs.xihei-version }}
-      - run: just build
+      - run: just build-web
         env:
           PUBLIC_SITE_URL: https://example.github.io
           PUBLIC_BASE_PATH: /
+      - run: just build-miniapp
+        env:
+          TARO_APP_ID: test-app-id
+
