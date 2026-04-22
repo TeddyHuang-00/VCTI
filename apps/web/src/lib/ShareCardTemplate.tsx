@@ -5,6 +5,12 @@ import { DIMENSION_COLORS, withAlpha } from "@vcti/shared/lib/colors";
 const BAR_SIDE_PADDING_PX = 3;
 const BAR_SOLID_HEIGHT_PX = 10;
 const BAR_UNCERTAINTY_HEIGHT_PX = 8;
+const CONTAINER_HEIGHT_PX = 16;
+
+// Inset from container edge so uncertainty bar's endpoint circle center
+// aligns with container's endpoint circle center at maximum extent.
+// Container r=8, bar r=4 → inset = 8 - 4 = 4px
+const UNCERTAINTY_TRACK_INSET_PX = CONTAINER_HEIGHT_PX / 2 - BAR_UNCERTAINTY_HEIGHT_PX / 2;
 
 function tone(dimensionId: DimensionId, leaning: "left" | "right", alpha = 1) {
   return withAlpha(DIMENSION_COLORS[dimensionId][leaning], alpha);
@@ -71,11 +77,20 @@ function barGeometry(
     fillWidth = fillPixels + BAR_SOLID_HEIGHT_PX / 2;
   }
 
+  const rawUncertaintyLeft =
+    BAR_SIDE_PADDING_PX + half + uncertaintyStart - BAR_UNCERTAINTY_HEIGHT_PX / 2;
+  const rawUncertaintyRight =
+    rawUncertaintyLeft + (uncertaintyEnd - uncertaintyStart + BAR_UNCERTAINTY_HEIGHT_PX / 2);
+  const minUncertaintyX = UNCERTAINTY_TRACK_INSET_PX;
+  const maxUncertaintyX = trackWidth - UNCERTAINTY_TRACK_INSET_PX;
+  const clampedUncertaintyLeft = Math.max(minUncertaintyX, rawUncertaintyLeft);
+  const clampedUncertaintyRight = Math.min(maxUncertaintyX, rawUncertaintyRight);
+
   return {
     fillLeft,
     fillWidth,
-    uncertaintyLeft: BAR_SIDE_PADDING_PX + half + uncertaintyStart - BAR_UNCERTAINTY_HEIGHT_PX / 2,
-    uncertaintyWidth: uncertaintyEnd - uncertaintyStart + BAR_UNCERTAINTY_HEIGHT_PX / 2,
+    uncertaintyLeft: clampedUncertaintyLeft,
+    uncertaintyWidth: clampedUncertaintyRight - clampedUncertaintyLeft,
   };
 }
 

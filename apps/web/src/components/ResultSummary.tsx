@@ -2,9 +2,16 @@ import { dimensions, MAX_REACHABLE_POSTERIOR } from "@vcti/shared/domain/vcti";
 import type { AssessmentResult, DimensionId } from "@vcti/shared/domain/vcti/types";
 import { DIMENSION_COLORS, withAlpha, withSaturation } from "@vcti/shared/lib/colors";
 
-const BAR_SIDE_PADDING_PX = 3;
+const CONTAINER_HEIGHT_PX = 16; // h-4
 const BAR_SOLID_HEIGHT_PX = 10;
 const BAR_UNCERTAINTY_HEIGHT_PX = 8;
+
+// Inset from container edge so each bar's endpoint circle center aligns with
+// the container's endpoint circle center at maximum extent.
+// Solid bar:    container r=8, bar r=5 → inset = 8 - 5 = 3px
+// Uncertainty:  container r=8, bar r=4 → inset = 8 - 4 = 4px
+const BAR_SOLID_TRACK_INSET_PX = CONTAINER_HEIGHT_PX / 2 - BAR_SOLID_HEIGHT_PX / 2;
+const BAR_UNCERTAINTY_TRACK_INSET_PX = CONTAINER_HEIGHT_PX / 2 - BAR_UNCERTAINTY_HEIGHT_PX / 2;
 
 function toPercent(value: number) {
   return Math.round(value * 100);
@@ -86,25 +93,38 @@ function DimensionBar({
         <div
           className="absolute inset-y-0"
           style={{
-            left: `${BAR_SIDE_PADDING_PX}px`,
-            right: `${BAR_SIDE_PADDING_PX}px`,
+            left: `${BAR_SOLID_TRACK_INSET_PX}px`,
+            right: `${BAR_SOLID_TRACK_INSET_PX}px`,
           }}
         >
           <div className="absolute top-0 left-1/2 w-px h-full -translate-x-1/2 bg-[#c9c4be]" />
           <div
             className="absolute top-1/2 rounded-full -translate-y-1/2"
             style={{
-              ...uncertaintyStyle,
-              height: `${BAR_UNCERTAINTY_HEIGHT_PX}px`,
-              background: toneColor(dimensionId, leaning, purity, 0.26),
-            }}
-          />
-          <div
-            className="absolute top-1/2 rounded-full -translate-y-1/2"
-            style={{
               ...solidStyle,
               height: `${BAR_SOLID_HEIGHT_PX}px`,
               background: toneColor(dimensionId, leaning, purity),
+            }}
+          />
+        </div>
+
+        {/* Uncertainty bar track: narrower inset so the bar's endpoint circle
+            center aligns with the container's at maximum extent */}
+        <div
+          className="absolute top-1/2 overflow-hidden rounded-full"
+          style={{
+            left: `${BAR_UNCERTAINTY_TRACK_INSET_PX}px`,
+            right: `${BAR_UNCERTAINTY_TRACK_INSET_PX}px`,
+            height: `${BAR_UNCERTAINTY_HEIGHT_PX}px`,
+            marginTop: `-${BAR_UNCERTAINTY_HEIGHT_PX / 2}px`,
+          }}
+        >
+          <div
+            className="absolute top-0 rounded-full"
+            style={{
+              ...uncertaintyStyle,
+              height: `${BAR_UNCERTAINTY_HEIGHT_PX}px`,
+              background: toneColor(dimensionId, leaning, purity, 0.26),
             }}
           />
         </div>
