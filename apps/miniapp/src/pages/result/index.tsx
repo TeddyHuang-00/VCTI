@@ -101,6 +101,24 @@ function DimensionBar({
   return (
     <View className="dimension-bar">
       <View className="dimension-bar__track">
+        {/* Uncertainty bar track */}
+        <View
+          className="dimension-bar__uncertainty-track"
+          style={{
+            left: `${BAR_UNCERTAINTY_TRACK_INSET_PX}px`,
+            right: `${BAR_UNCERTAINTY_TRACK_INSET_PX}px`,
+          }}
+        >
+          <View
+            className="dimension-bar__uncertainty"
+            style={{
+              ...uncertaintyStyle,
+              height: `${BAR_UNCERTAINTY_HEIGHT_PX}px`,
+              backgroundColor: toneColor(dimensionId, leaning, purity, 0.26),
+            }}
+          />
+        </View>
+
         {/* Solid bar track */}
         <View
           className="dimension-bar__solid-track"
@@ -116,24 +134,6 @@ function DimensionBar({
               ...solidStyle,
               height: `${BAR_SOLID_HEIGHT_PX}px`,
               backgroundColor: toneColor(dimensionId, leaning, purity),
-            }}
-          />
-        </View>
-
-        {/* Uncertainty bar track */}
-        <View
-          className="dimension-bar__uncertainty-track"
-          style={{
-            left: `${BAR_UNCERTAINTY_TRACK_INSET_PX}px`,
-            right: `${BAR_UNCERTAINTY_TRACK_INSET_PX}px`,
-          }}
-        >
-          <View
-            className="dimension-bar__uncertainty"
-            style={{
-              ...uncertaintyStyle,
-              height: `${BAR_UNCERTAINTY_HEIGHT_PX}px`,
-              backgroundColor: toneColor(dimensionId, leaning, purity, 0.26),
             }}
           />
         </View>
