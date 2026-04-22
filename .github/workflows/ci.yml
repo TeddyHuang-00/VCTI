@@ -50,33 +50,30 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - run: just check-${{ matrix.app }}
 
-  build-web:
-    name: Build Test - Web
+  build:
+    name: Build Test
+    strategy:
+      matrix:
+        app: [web, miniapp]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
       - uses: extractions/setup-just@v4
       - uses: oven-sh/setup-bun@v2
       - name: Get font version
+        if: matrix.app == 'web'
         id: font-version
         run: |
           just font-version | tee -a "$GITHUB_OUTPUT"
       - uses: actions/cache@v5
+        if: matrix.app == 'web'
         with:
           path: .cache/fonts
           key: cache-font-${{ steps.font-version.outputs.wenkai-version }}-${{ steps.font-version.outputs.xihei-version }}
-      - run: just build-web
+      - run: just build-${{ matrix.app }}
         env:
+          # Env vars for web build
           PUBLIC_SITE_URL: https://example.github.io
           PUBLIC_BASE_PATH: /
-
-  build-miniapp:
-    name: Build Test - Miniapp
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: extractions/setup-just@v4
-      - uses: oven-sh/setup-bun@v2
-      - run: just build-miniapp
-        env:
+          # Env vars for miniapp build
           TARO_APP_ID: test-app-id
