@@ -22,8 +22,8 @@
     "@tarojs/taro": "4.2.0",
     "@vcti/shared": "workspace:*",
     "qrcode": "1.5.4",
-    "react": "18.3.1",
-    "react-dom": "18.3.1"
+    "react": "19.2.5",
+    "react-dom": "19.2.5"
   },
   "devDependencies": {
     "@babel/plugin-proposal-decorators": "7.29.0",
@@ -31,8 +31,8 @@
     "@babel/runtime": "7.29.2",
     "@tarojs/cli": "4.2.0",
     "@tarojs/vite-runner": "4.2.0",
-    "@types/react": "18.3.28",
-    "@types/react-dom": "18.3.7",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "4.7.0",
     "miniprogram-ci": "2.1.32",
     "sass-embedded": "1.99.0",
