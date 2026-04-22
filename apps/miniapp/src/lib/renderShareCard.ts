@@ -51,13 +51,13 @@ function drawBar(
   w: number,
   dimId: DimensionId,
   leaning: "left" | "right",
-  posterior: number,
+  normalized: number,
   variance: number
 ) {
   const midX = x + w / 2;
   const half = w / 2;
-  const pos = (Math.abs(posterior) / MAX_REACHABLE_POSTERIOR) * half;
-  const range = getUncertaintyRange(posterior, variance);
+  const pos = (Math.abs(normalized) / MAX_REACHABLE_POSTERIOR) * half;
+  const range = getUncertaintyRange(normalized, variance);
   const trackH = BAR_SH + 6;
 
   fillRR(ctx, x, y, w, trackH, trackH / 2, "#f3f1ee");
@@ -273,7 +273,7 @@ export async function renderShareCard(
     // Bar
     const barY = iy + 52;
     const barW = cw - 24;
-    drawBar(ctx, cx + 12, barY, barW, dim.id, score.leaning, score.posterior, score.variance);
+    drawBar(ctx, cx + 12, barY, barW, dim.id, score.leaning, score.normalized, score.variance);
 
     // Labels
     ctx.font = '400 9px "PingFang SC", sans-serif';

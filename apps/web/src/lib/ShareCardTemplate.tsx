@@ -1,4 +1,4 @@
-import { dimensions, MAX_REACHABLE_POSTERIOR } from "@vcti/shared/domain/vcti";
+import { dimensions, getUncertaintyRange, MAX_REACHABLE_POSTERIOR } from "@vcti/shared/domain/vcti";
 import type { AssessmentResult, DimensionId } from "@vcti/shared/domain/vcti/types";
 import { DIMENSION_COLORS, withAlpha } from "@vcti/shared/lib/colors";
 
@@ -35,31 +35,16 @@ function splitWords(value: string, maxChars: number) {
   return lines;
 }
 
-function getUncertaintyRange(posterior: number, variance: number) {
-  const purity = Math.abs(posterior) / MAX_REACHABLE_POSTERIOR;
-  const n = 5;
-  const obsVarFloor = 0.1;
-  const obsVar = Math.max(variance, obsVarFloor);
-  const posteriorVar = 1 / (1 + n / obsVar);
-  const posteriorSD = Math.sqrt(posteriorVar);
-  const spread = posteriorSD / MAX_REACHABLE_POSTERIOR;
-  return {
-    start: purity - spread,
-    end: purity + spread,
-  };
-}
-
 function barGeometry(
   leaning: "left" | "right",
-  purity: number,
-  posterior: number,
+  normalized: number,
   trackWidth: number,
   variance: number
 ) {
   const innerTrackWidth = trackWidth - BAR_SIDE_PADDING_PX * 2;
   const half = innerTrackWidth / 2;
-  const fillPixels = half * purity;
-  const uncertaintyRange = getUncertaintyRange(posterior, variance);
+  const fillPixels = half * (Math.abs(normalized) / MAX_REACHABLE_POSTERIOR);
+  const uncertaintyRange = getUncertaintyRange(normalized, variance);
   const uncertaintyStart = uncertaintyRange.start * half;
   const uncertaintyEnd = uncertaintyRange.end * half;
 
@@ -78,9 +63,13 @@ function barGeometry(
   }
 
   const rawUncertaintyLeft =
-    BAR_SIDE_PADDING_PX + half + uncertaintyStart - BAR_UNCERTAINTY_HEIGHT_PX / 2;
+    leaning === "left"
+      ? BAR_SIDE_PADDING_PX + (half - uncertaintyEnd)
+      : BAR_SIDE_PADDING_PX + half + uncertaintyStart;
   const rawUncertaintyRight =
-    rawUncertaintyLeft + (uncertaintyEnd - uncertaintyStart + BAR_UNCERTAINTY_HEIGHT_PX / 2);
+    leaning === "left"
+      ? BAR_SIDE_PADDING_PX + (half - uncertaintyStart)
+      : BAR_SIDE_PADDING_PX + half + uncertaintyEnd;
   const minUncertaintyX = UNCERTAINTY_TRACK_INSET_PX;
   const maxUncertaintyX = trackWidth - UNCERTAINTY_TRACK_INSET_PX;
   const clampedUncertaintyLeft = Math.max(minUncertaintyX, rawUncertaintyLeft);
@@ -321,8 +310,7 @@ export default function ShareCardTemplate({
             const score = result.dimensionScores[dimension.id];
             const geometry = barGeometry(
               score.leaning,
-              score.purity,
-              score.posterior,
+              score.normalized,
               trackWidth,
               score.variance
             );

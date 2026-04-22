@@ -6,32 +6,35 @@ const CONTAINER_HEIGHT_PX = 16; // h-4
 const BAR_SOLID_HEIGHT_PX = 10;
 const BAR_UNCERTAINTY_HEIGHT_PX = 8;
 
-// Inset from container edge so each bar's endpoint circle center aligns with
-// the container's endpoint circle center at maximum extent.
-// Solid bar:    container r=8, bar r=5 → inset = 8 - 5 = 3px
-// Uncertainty:  container r=8, bar r=4 → inset = 8 - 4 = 4px
-const BAR_SOLID_TRACK_INSET_PX = CONTAINER_HEIGHT_PX / 2 - BAR_SOLID_HEIGHT_PX / 2;
-const BAR_UNCERTAINTY_TRACK_INSET_PX = CONTAINER_HEIGHT_PX / 2 - BAR_UNCERTAINTY_HEIGHT_PX / 2;
-
 function toPercent(value: number) {
   return Math.round(value * 100);
 }
 
-function toBarPosition(posterior: number) {
-  const purity = Math.abs(posterior) / MAX_REACHABLE_POSTERIOR;
+function toBarPosition(normalized: number) {
+  const purity = Math.abs(normalized) / MAX_REACHABLE_POSTERIOR;
   return purity * 50;
 }
 
-function buildBarStyle(leaning: "left" | "right", start: number, span: number, radiusPx: number) {
-  if (leaning === "left") {
-    return {
-      left: `${50 - start - span}%`,
-      width: `calc(${span}% + ${radiusPx}px)`,
-    };
-  }
+function buildUncertaintyStyle(leaning: "left" | "right", start: number, end: number) {
+  const rawLeft = leaning === "left" ? 50 - end : 50 + start;
+  const rawRight = leaning === "left" ? 50 - start : 50 + end;
+  const clampedLeft = Math.max(0, Math.min(100, rawLeft));
+  const clampedRight = Math.max(0, Math.min(100, rawRight));
+  const center = (clampedLeft + clampedRight) / 2;
+  const span = Math.max(0, clampedRight - clampedLeft);
+
   return {
-    left: `calc(${50 + start}% - ${radiusPx}px)`,
-    width: `calc(${span}% + ${radiusPx}px)`,
+    left: `${center}%`,
+    width: `${span}%`,
+    transform: "translateX(-50%)",
+  };
+}
+
+function buildSolidStyle(leaning: "left" | "right", end: number, minWidthPx: number) {
+  const radiusPx = minWidthPx / 2;
+  return {
+    left: leaning === "left" ? `${50 - end}%` : `calc(50% - ${radiusPx}px)`,
+    width: `max(calc(${end}% + ${radiusPx}px), ${minWidthPx}px)`,
   };
 }
 
@@ -42,74 +45,63 @@ function toneColor(dimensionId: DimensionId, leaning: "left" | "right", purity: 
 
 function DimensionBar({
   dimensionId,
-  posterior,
+  normalized,
   purity,
   leaning,
   variance,
 }: {
   dimensionId: DimensionId;
-  posterior: number;
+  normalized: number;
   purity: number;
   leaning: "left" | "right";
   variance: number;
 }) {
-  const position = toBarPosition(posterior);
-  const uncertaintyRange = getUncertaintyRange(posterior, variance);
+  const position = toBarPosition(normalized);
+  const uncertaintyRange = getUncertaintyRange(normalized, variance);
   const uncertaintyStart = uncertaintyRange.start * 50;
   const uncertaintyEnd = uncertaintyRange.end * 50;
-
-  const isCircle = position < BAR_SOLID_HEIGHT_PX / 2;
-  const solidStyle = isCircle
-    ? {
-        left: `calc(50% - ${BAR_SOLID_HEIGHT_PX / 2}px)`,
-        width: `${BAR_SOLID_HEIGHT_PX}px`,
-      }
-    : buildBarStyle(leaning, 0, position, BAR_SOLID_HEIGHT_PX / 2);
-
-  const uncertaintyStyle = buildBarStyle(
-    leaning,
-    uncertaintyStart,
-    uncertaintyEnd - uncertaintyStart,
-    BAR_UNCERTAINTY_HEIGHT_PX / 2
-  );
+  const solidInsetPx = CONTAINER_HEIGHT_PX / 2 - BAR_SOLID_HEIGHT_PX / 2;
+  const uncertaintyInsetPx = CONTAINER_HEIGHT_PX / 2 - BAR_UNCERTAINTY_HEIGHT_PX / 2;
+  const solidStyle = buildSolidStyle(leaning, position, BAR_SOLID_HEIGHT_PX);
+  const uncertaintyStyle = buildUncertaintyStyle(leaning, uncertaintyStart, uncertaintyEnd);
 
   return (
     <div className="mt-4">
       <div className="relative h-4 rounded-full bg-[#f3f1ee] shadow-inset-subtle">
+        <div className="absolute top-0 left-1/2 w-px h-full -translate-x-1/2 bg-[#c9c4be]" />
         <div
-          className="absolute inset-y-0"
+          className="absolute top-1/2"
           style={{
-            left: `${BAR_SOLID_TRACK_INSET_PX}px`,
-            right: `${BAR_SOLID_TRACK_INSET_PX}px`,
+            left: `${solidInsetPx}px`,
+            right: `${solidInsetPx}px`,
+            height: `${BAR_SOLID_HEIGHT_PX}px`,
+            marginTop: `-${BAR_SOLID_HEIGHT_PX / 2}px`,
+            overflow: "visible",
           }}
         >
-          <div className="absolute top-0 left-1/2 w-px h-full -translate-x-1/2 bg-[#c9c4be]" />
           <div
-            className="absolute top-1/2 rounded-full -translate-y-1/2"
+            className="absolute top-0 h-full rounded-full"
             style={{
               ...solidStyle,
-              height: `${BAR_SOLID_HEIGHT_PX}px`,
               background: toneColor(dimensionId, leaning, purity),
             }}
           />
         </div>
 
-        {/* Uncertainty bar track: narrower inset so the bar's endpoint circle
-            center aligns with the container's at maximum extent */}
         <div
-          className="absolute top-1/2 overflow-hidden rounded-full"
+          className="absolute top-1/2"
           style={{
-            left: `${BAR_UNCERTAINTY_TRACK_INSET_PX}px`,
-            right: `${BAR_UNCERTAINTY_TRACK_INSET_PX}px`,
+            left: `${uncertaintyInsetPx}px`,
+            right: `${uncertaintyInsetPx}px`,
             height: `${BAR_UNCERTAINTY_HEIGHT_PX}px`,
             marginTop: `-${BAR_UNCERTAINTY_HEIGHT_PX / 2}px`,
+            overflow: "hidden",
           }}
         >
           <div
-            className="absolute top-0 rounded-full"
+            className="absolute top-0 h-full rounded-full"
             style={{
               ...uncertaintyStyle,
-              height: `${BAR_UNCERTAINTY_HEIGHT_PX}px`,
               background: toneColor(dimensionId, leaning, purity, 0.26),
             }}
           />
@@ -184,7 +176,7 @@ export default function ResultSummary({
 
                   <DimensionBar
                     dimensionId={dimension.id}
-                    posterior={score.posterior}
+                    normalized={score.normalized}
                     purity={score.purity}
                     leaning={score.leaning}
                     variance={score.variance}

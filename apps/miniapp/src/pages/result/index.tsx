@@ -8,7 +8,7 @@ import {
   parseDimensionScoresFromQuery,
   parseResultCodeFromQuery,
 } from "@vcti/shared/domain/vcti";
-import type { AssessmentResult, DimensionId } from "@vcti/shared/domain/vcti/types";
+import type { DimensionId } from "@vcti/shared/domain/vcti/types";
 import { DIMENSION_COLORS, withAlpha, withSaturation } from "@vcti/shared/lib/colors";
 import { useMemo, useState } from "react";
 import { renderShareCard } from "../../lib/renderShareCard";
@@ -18,27 +18,30 @@ const CONTAINER_HEIGHT_PX = 16;
 const BAR_SOLID_HEIGHT_PX = 10;
 const BAR_UNCERTAINTY_HEIGHT_PX = 8;
 
-// Inset from container edge so each bar's endpoint circle center aligns with
-// the container's endpoint circle center at maximum extent.
-// Solid bar:    container r=8, bar r=5 → inset = 8 - 5 = 3px
-// Uncertainty:  container r=8, bar r=4 → inset = 8 - 4 = 4px
-const BAR_SOLID_TRACK_INSET_PX = CONTAINER_HEIGHT_PX / 2 - BAR_SOLID_HEIGHT_PX / 2;
-const BAR_UNCERTAINTY_TRACK_INSET_PX = CONTAINER_HEIGHT_PX / 2 - BAR_UNCERTAINTY_HEIGHT_PX / 2;
-
 function toPercent(value: number) {
   return Math.round(value * 100);
 }
 
-function buildBarStyle(leaning: "left" | "right", start: number, span: number, radiusPx: number) {
-  if (leaning === "left") {
-    return {
-      left: `${50 - start - span}%`,
-      width: `calc(${span}% + ${radiusPx}px)`,
-    };
-  }
+function buildUncertaintyStyle(leaning: "left" | "right", start: number, end: number) {
+  const rawLeft = leaning === "left" ? 50 - end : 50 + start;
+  const rawRight = leaning === "left" ? 50 - start : 50 + end;
+  const clampedLeft = Math.max(0, Math.min(100, rawLeft));
+  const clampedRight = Math.max(0, Math.min(100, rawRight));
+  const center = (clampedLeft + clampedRight) / 2;
+  const span = Math.max(0, clampedRight - clampedLeft);
+
   return {
-    left: `calc(${50 + start}% - ${radiusPx}px)`,
-    width: `calc(${span}% + ${radiusPx}px)`,
+    left: `${center}%`,
+    width: `${span}%`,
+    transform: "translateX(-50%)",
+  };
+}
+
+function buildSolidStyle(leaning: "left" | "right", end: number, minWidthPx: number) {
+  const radiusPx = minWidthPx / 2;
+  return {
+    left: leaning === "left" ? `${50 - end}%` : `calc(50% - ${radiusPx}px)`,
+    width: `max(calc(${end}% + ${radiusPx}px), ${minWidthPx}px)`,
   };
 }
 
@@ -49,74 +52,62 @@ function toneColor(dimensionId: DimensionId, leaning: "left" | "right", purity: 
 
 function DimensionBar({
   dimensionId,
-  posterior,
+  normalized,
   purity,
   leaning,
   variance,
 }: {
   dimensionId: DimensionId;
-  posterior: number;
+  normalized: number;
   purity: number;
   leaning: "left" | "right";
   variance: number;
 }) {
-  const position = (Math.abs(posterior) / MAX_REACHABLE_POSTERIOR) * 50;
-  const uncertaintyRange = getUncertaintyRange(posterior, variance);
+  const position = (Math.abs(normalized) / MAX_REACHABLE_POSTERIOR) * 50;
+  const uncertaintyRange = getUncertaintyRange(normalized, variance);
   const uncertaintyStart = uncertaintyRange.start * 50;
   const uncertaintyEnd = uncertaintyRange.end * 50;
-
-  // When the bar would be narrower than its height, draw a centered circle instead.
-  const solidPx = position * 2; // position is in % of half-track, 2*position ≈ px when track~=200px
-  const isCircle = position < BAR_SOLID_HEIGHT_PX / 2;
-  const solidStyle = isCircle
-    ? {
-        left: `calc(50% - ${BAR_SOLID_HEIGHT_PX / 2}px)`,
-        width: `${BAR_SOLID_HEIGHT_PX}px`,
-      }
-    : buildBarStyle(leaning, 0, position, BAR_SOLID_HEIGHT_PX / 2);
-
-  const uncertaintyStyle = buildBarStyle(
-    leaning,
-    uncertaintyStart,
-    uncertaintyEnd - uncertaintyStart,
-    BAR_UNCERTAINTY_HEIGHT_PX / 2
-  );
+  const solidInsetPx = CONTAINER_HEIGHT_PX / 2 - BAR_SOLID_HEIGHT_PX / 2;
+  const uncertaintyInsetPx = CONTAINER_HEIGHT_PX / 2 - BAR_UNCERTAINTY_HEIGHT_PX / 2;
+  const solidStyle = buildSolidStyle(leaning, position, BAR_SOLID_HEIGHT_PX);
+  const uncertaintyStyle = buildUncertaintyStyle(leaning, uncertaintyStart, uncertaintyEnd);
 
   return (
     <View className="dimension-bar">
       <View className="dimension-bar__track">
-        {/* Uncertainty bar track */}
+        <View className="dimension-bar__midline" />
         <View
-          className="dimension-bar__uncertainty-track"
+          className="dimension-bar__positioner"
           style={{
-            left: `${BAR_UNCERTAINTY_TRACK_INSET_PX}px`,
-            right: `${BAR_UNCERTAINTY_TRACK_INSET_PX}px`,
+            left: `${uncertaintyInsetPx}px`,
+            right: `${uncertaintyInsetPx}px`,
+            height: `${BAR_UNCERTAINTY_HEIGHT_PX}px`,
+            marginTop: `-${BAR_UNCERTAINTY_HEIGHT_PX / 2}px`,
+            overflow: "hidden",
           }}
         >
           <View
             className="dimension-bar__uncertainty"
             style={{
               ...uncertaintyStyle,
-              height: `${BAR_UNCERTAINTY_HEIGHT_PX}px`,
               backgroundColor: toneColor(dimensionId, leaning, purity, 0.26),
             }}
           />
         </View>
 
-        {/* Solid bar track */}
         <View
-          className="dimension-bar__solid-track"
+          className="dimension-bar__positioner"
           style={{
-            left: `${BAR_SOLID_TRACK_INSET_PX}px`,
-            right: `${BAR_SOLID_TRACK_INSET_PX}px`,
+            left: `${solidInsetPx}px`,
+            right: `${solidInsetPx}px`,
+            height: `${BAR_SOLID_HEIGHT_PX}px`,
+            marginTop: `-${BAR_SOLID_HEIGHT_PX / 2}px`,
           }}
         >
-          <View className="dimension-bar__midline" />
           <View
             className="dimension-bar__solid"
             style={{
               ...solidStyle,
-              height: `${BAR_SOLID_HEIGHT_PX}px`,
               backgroundColor: toneColor(dimensionId, leaning, purity),
             }}
           />
@@ -190,7 +181,7 @@ export default function ResultPage() {
 
   async function getCanvasNode() {
     const query = Taro.createSelectorQuery();
-    const nodes = await new Promise<any[]>((resolve) => {
+    const nodes = await new Promise<Array<{ node?: HTMLCanvasElement }>>((resolve) => {
       query.select("#shareCanvas").fields({ node: true, size: true }).exec(resolve);
     });
     return nodes[0]?.node;
@@ -361,7 +352,7 @@ export default function ResultPage() {
 
                 <DimensionBar
                   dimensionId={dimension.id}
-                  posterior={score.posterior}
+                  normalized={score.normalized}
                   purity={score.purity}
                   leaning={score.leaning}
                   variance={score.variance}

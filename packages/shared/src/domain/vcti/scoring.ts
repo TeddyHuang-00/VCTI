@@ -12,7 +12,6 @@ import { DIMENSIONS } from "./types";
 
 export const PRIOR_VARIANCE = 0.3;
 export const N_QUESTIONS = 5;
-const OBS_VAR_FLOOR = 0.1;
 const SCALE_MAX = 15;
 const NEUTRAL_THRESHOLD = 0.3;
 const HALL_DV_THRESHOLD = 1.05;
@@ -27,13 +26,28 @@ const QUERY_PARAM_KEYS: Record<DimensionId, string> = {
 };
 const RESULT_CODE_KEY = "code";
 
-/** Maximum possible |posterior| = max |sample mean| when all 5 answers are ±3. */
+/** Maximum reachable absolute score on the per-question mean scale. */
 const MAX_REACHABLE_POSTERIOR = SCALE_MAX / N_QUESTIONS;
 
 const coreQuestions = questions.filter((q) => q.category === "core");
 const scoredQuestions = questions.filter((q) => q.category !== "scenario");
 
 export { MAX_REACHABLE_POSTERIOR };
+
+function toDisplayPurity(normalized: number) {
+  return clamp(Math.abs(normalized) / MAX_REACHABLE_POSTERIOR, 0, 1);
+}
+
+function getPosteriorMean(mu: number, variance: number, priorMean = 0) {
+  const denominator = N_QUESTIONS * PRIOR_VARIANCE + variance;
+  if (denominator === 0) return priorMean;
+  return (variance / denominator) * priorMean + ((N_QUESTIONS * PRIOR_VARIANCE) / denominator) * mu;
+}
+
+function getPosteriorVariance(variance: number) {
+  if (variance <= 0) return 0;
+  return (PRIOR_VARIANCE * variance) / (variance + N_QUESTIONS * PRIOR_VARIANCE);
+}
 
 function getContribution(questionId: string, answer: number) {
   const question = questions.find((q) => q.id === questionId);
@@ -58,7 +72,7 @@ function assembleDimensionScore(
     throw new Error(`Unknown dimension: ${id}`);
   }
 
-  const purity = clamp(Math.abs(posterior) / MAX_REACHABLE_POSTERIOR, 0, 1);
+  const purity = toDisplayPurity(normalized);
   const leaning = posterior <= 0 ? "left" : "right";
   const letter = leaning === "left" ? descriptor.leftLetter : descriptor.rightLetter;
   const isNeutral = Math.abs(posterior) < NEUTRAL_THRESHOLD;
@@ -69,9 +83,8 @@ function assembleDimensionScore(
 function buildDimensionScore(id: DimensionId, raw: number, variance: number): DimensionScore {
   // Sample mean of the 5 answer contributions, range [-3, 3].
   const mu = raw / N_QUESTIONS;
-  // Bayesian posterior mean: μ' = Nσ₀²/(Nσ₀² + s) · μ  (prior mean μ₀ = 0).
-  const s = Math.max(variance, OBS_VAR_FLOOR);
-  const posterior = ((N_QUESTIONS * PRIOR_VARIANCE) / (N_QUESTIONS * PRIOR_VARIANCE + s)) * mu;
+  // Bayesian posterior mean with prior mean μ₀ = 0.
+  const posterior = getPosteriorMean(mu, variance);
   return assembleDimensionScore(id, raw, mu, posterior, variance);
 }
 
@@ -82,22 +95,25 @@ function buildDimensionScoreFromPosterior(
 ): DimensionScore {
   const posterior = clamp(posteriorInput, -MAX_REACHABLE_POSTERIOR, MAX_REACHABLE_POSTERIOR);
   // Invert the posterior mean formula to recover the sample mean.
-  const s = Math.max(variance, OBS_VAR_FLOOR);
-  const mu = (posterior * (N_QUESTIONS * PRIOR_VARIANCE + s)) / (N_QUESTIONS * PRIOR_VARIANCE);
+  const mu =
+    (posterior * (N_QUESTIONS * PRIOR_VARIANCE + variance)) / (N_QUESTIONS * PRIOR_VARIANCE);
   const raw = clamp(Math.round(mu * N_QUESTIONS), -SCALE_MAX, SCALE_MAX);
   return assembleDimensionScore(id, raw, mu, posterior, variance);
 }
 
 /**
- * Compute the ±2σ uncertainty range around the posterior mean, in purity units [0, 1].
- * The posterior variance is σ'² = 1 / (1/σ₀² + N/s) where s is the sample variance.
+ * Compute the ±2σ uncertainty range around the recovered normalized score, in purity units.
+ * The posterior variance can be written as σ'² = σ₀²·σ² / (σ² + N·σ₀²).
+ * Since display purity is based on the recovered normalized score μ rather than the shrunk posterior μ',
+ * convert the posterior SD back onto the normalized-score scale before normalizing.
  */
-export function getUncertaintyRange(posterior: number, variance: number) {
-  const purity = Math.abs(posterior) / MAX_REACHABLE_POSTERIOR;
-  const s = Math.max(variance, OBS_VAR_FLOOR);
-  const posteriorVar = 1 / (1 / PRIOR_VARIANCE + N_QUESTIONS / s);
+export function getUncertaintyRange(normalized: number, variance: number) {
+  const purity = Math.abs(normalized) / MAX_REACHABLE_POSTERIOR;
+  const shrinkFactor = (N_QUESTIONS * PRIOR_VARIANCE) / (N_QUESTIONS * PRIOR_VARIANCE + variance);
+  const posteriorVar = getPosteriorVariance(variance);
   const posteriorSD = Math.sqrt(posteriorVar);
-  const spread = (2 * posteriorSD) / MAX_REACHABLE_POSTERIOR;
+  const normalizedSD = shrinkFactor === 0 ? 0 : posteriorSD / shrinkFactor;
+  const spread = (2 * normalizedSD) / MAX_REACHABLE_POSTERIOR;
   return {
     start: purity - spread,
     end: purity + spread,
@@ -325,7 +341,7 @@ export function parseDimensionScoresFromQuery(
     const parts = decoded.split(",");
     const posterior = Number(parts[0]);
     if (Number.isNaN(posterior)) return null;
-    posteriors[dimension.id] = clamp(posterior, -2, 2);
+    posteriors[dimension.id] = clamp(posterior, -MAX_REACHABLE_POSTERIOR, MAX_REACHABLE_POSTERIOR);
     // Variance is the second component; default to 1.0 for old-format URLs
     const variance = parts.length > 1 ? Number(parts[1]) : 1.0;
     variances[dimension.id] = Number.isNaN(variance) ? 1.0 : Math.max(0, variance);
