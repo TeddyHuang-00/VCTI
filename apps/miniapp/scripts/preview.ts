@@ -59,7 +59,7 @@ async function main() {
   });
 
   console.log("📤 Uploading preview...");
-  const result = await preview({
+  await preview({
     project,
     desc: "VCTI preview",
     setting: {

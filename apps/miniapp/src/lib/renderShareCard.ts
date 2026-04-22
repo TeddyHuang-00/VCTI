@@ -107,21 +107,46 @@ function drawBar(
 function truncateText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string {
   if (ctx.measureText(text).width <= maxWidth) return text;
   let result = text;
-  while (result.length > 0 && ctx.measureText(result + "…").width > maxWidth) {
+  while (result.length > 0 && ctx.measureText(`${result}…`).width > maxWidth) {
     result = result.slice(0, -1);
   }
-  return result + "…";
+  return `${result}…`;
 }
 
-function loadCanvasImage(canvas: HTMLCanvasElement, src: string): Promise<CanvasImageSource> {
+type CanvasImageWithLifecycle = {
+  onload: (() => void) | null;
+  onerror: ((error?: unknown) => void) | null;
+  src: string;
+};
+
+export interface CanvasLike {
+  width: number;
+  height: number;
+  getContext: (contextId: "2d") => CanvasRenderingContext2D | null;
+}
+
+interface WeappCanvasLike extends CanvasLike {
+  createImage?: () => CanvasImageWithLifecycle;
+}
+
+function getRenderingContext(canvas: CanvasLike) {
+  const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    throw new Error("Canvas 2D context not available");
+  }
+  return ctx;
+}
+
+function loadCanvasImage(canvas: CanvasLike, src: string): Promise<CanvasImageSource> {
   // WeChat Canvas 2D API (weapp)
-  if (typeof (canvas as any).createImage === "function") {
-    const img = (canvas as any).createImage() as CanvasImageSource & {
-      onload: () => void;
-      onerror: () => void;
-    };
+  const weappCanvas = canvas as WeappCanvasLike;
+  if (typeof weappCanvas.createImage === "function") {
+    const img = weappCanvas.createImage();
+    if (!img) {
+      return Promise.reject(new Error("Canvas image factory not available"));
+    }
     return new Promise((resolve, reject) => {
-      img.onload = () => resolve(img);
+      img.onload = () => resolve(img as unknown as CanvasImageSource);
       img.onerror = reject;
       img.src = src;
     });
@@ -143,7 +168,7 @@ export interface RenderOptions {
 }
 
 export async function renderShareCard(
-  canvas: HTMLCanvasElement,
+  canvas: CanvasLike,
   dpr: number,
   options: RenderOptions
 ): Promise<void> {
@@ -152,7 +177,7 @@ export async function renderShareCard(
   canvas.width = W * dpr;
   canvas.height = H * dpr;
 
-  const ctx = canvas.getContext("2d")!;
+  const ctx = getRenderingContext(canvas);
   ctx.scale(dpr, dpr);
   ctx.textBaseline = "top";
 
@@ -290,14 +315,14 @@ export async function renderShareCard(
 
 /** Draw just the mini program code image onto the canvas (for direct save). */
 export async function renderMiniAppCode(
-  canvas: HTMLCanvasElement,
+  canvas: CanvasLike,
   dpr: number,
   imagePath: string
 ): Promise<void> {
   const size = 258;
   canvas.width = size * dpr;
   canvas.height = size * dpr;
-  const ctx = canvas.getContext("2d")!;
+  const ctx = getRenderingContext(canvas);
   ctx.scale(dpr, dpr);
 
   const img = await loadCanvasImage(canvas, imagePath);

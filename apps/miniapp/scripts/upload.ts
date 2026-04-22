@@ -64,7 +64,7 @@ async function main() {
   const desc = process.env.MINIAPP_DESC || `VCTI release v${version}`;
 
   console.log(`📤 Uploading release v${version}...`);
-  const result = await upload({
+  await upload({
     project,
     version,
     desc,

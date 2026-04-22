@@ -1,7 +1,14 @@
 {
   "$schema": "https://biomejs.dev/schemas/latest/schema.json",
   "files": {
-    "includes": ["**", "!**/.astro", "!**/dist", "!**/node_modules", "!**/public/archetypes"]
+    "includes": [
+      "**",
+      "!**/.astro",
+      "!**/dist",
+      "!**/node_modules",
+      "!**/public/archetypes",
+      "!apps/miniapp/src/index.html"
+    ]
   },
   "formatter": {
     "enabled": true,

@@ -14,8 +14,8 @@ import "./index.scss";
 
 const DOT_TONES: Record<number, { bg: string; text: string }> = {
   [-1]: { bg: "#d95c4f", text: "#b04439" },
-  [0]: { bg: "#d9d5d0", text: "#7f7a73" },
-  [1]: { bg: "#4e9a67", text: "#3f7d54" },
+  0: { bg: "#d9d5d0", text: "#7f7a73" },
+  1: { bg: "#4e9a67", text: "#3f7d54" },
 };
 
 function getTone(value: number) {
@@ -26,10 +26,10 @@ const DOT_SIZES: Record<number, number> = {
   [-3]: 24,
   [-2]: 20,
   [-1]: 16,
-  [0]: 12,
-  [1]: 16,
-  [2]: 20,
-  [3]: 24,
+  0: 12,
+  1: 16,
+  2: 20,
+  3: 24,
 };
 
 function getDotSize(value: number) {

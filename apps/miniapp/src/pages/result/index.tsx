@@ -11,6 +11,7 @@ import {
 import type { DimensionId } from "@vcti/shared/domain/vcti/types";
 import { DIMENSION_COLORS, withAlpha, withSaturation } from "@vcti/shared/lib/colors";
 import { useMemo, useState } from "react";
+import type { CanvasLike } from "../../lib/renderShareCard";
 import { renderShareCard } from "../../lib/renderShareCard";
 import "./index.scss";
 
@@ -181,7 +182,7 @@ export default function ResultPage() {
 
   async function getCanvasNode() {
     const query = Taro.createSelectorQuery();
-    const nodes = await new Promise<Array<{ node?: HTMLCanvasElement }>>((resolve) => {
+    const nodes = await new Promise<Array<{ node?: CanvasLike }>>((resolve) => {
       query.select("#shareCanvas").fields({ node: true, size: true }).exec(resolve);
     });
     return nodes[0]?.node;
@@ -220,7 +221,10 @@ export default function ResultPage() {
         miniappCodePath: "/assets/miniapp-qrcode.jpeg",
       });
 
-      const { tempFilePath } = await Taro.canvasToTempFilePath({ canvas, fileType: "png" });
+      const { tempFilePath } = await Taro.canvasToTempFilePath({
+        canvas: canvas as never,
+        fileType: "png",
+      });
       await saveToAlbum(tempFilePath);
       await Taro.showToast({ title: "已保存到相册", icon: "success" });
     } catch (err) {
@@ -383,7 +387,7 @@ export default function ResultPage() {
         </Button>
       </View>
 
-      {process.env.TARO_ENV === "weapp" && (
+      {Taro.getEnv() === Taro.ENV_TYPE.WEAPP && (
         <Canvas
           id="shareCanvas"
           type="2d"
