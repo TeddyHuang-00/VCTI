@@ -14,35 +14,44 @@ on:
   workflow_call:
 
 jobs:
-  format-web:
+  format:
     name: Code Format
+    strategy:
+      matrix:
+        app: [web, miniapp]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
       - uses: extractions/setup-just@v4
       - uses: oven-sh/setup-bun@v2
-      - run: just format-web
+      - run: just format-${{ matrix.app }}
 
-  lint-web:
+  lint:
     name: Code Lint
+    strategy:
+      matrix:
+        app: [web, miniapp]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
       - uses: extractions/setup-just@v4
       - uses: oven-sh/setup-bun@v2
-      - run: just lint-web
+      - run: just lint-${{ matrix.app }}
 
-  check-web:
+  check:
     name: Code Check
+    strategy:
+      matrix:
+        app: [web, miniapp]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
       - uses: extractions/setup-just@v4
       - uses: oven-sh/setup-bun@v2
-      - run: just check-web
+      - run: just check-${{ matrix.app }}
 
   build-web:
-    name: Build Web App
+    name: Build Test - Web
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -61,35 +70,8 @@ jobs:
           PUBLIC_SITE_URL: https://example.github.io
           PUBLIC_BASE_PATH: /
 
-  format-miniapp:
-    name: Miniapp CI
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: extractions/setup-just@v4
-      - uses: oven-sh/setup-bun@v2
-      - run: just format-miniapp
-
-  lint-miniapp:
-    name: Miniapp CI
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: extractions/setup-just@v4
-      - uses: oven-sh/setup-bun@v2
-      - run: just lint-miniapp
-
-  check-miniapp:
-    name: Miniapp CI
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: extractions/setup-just@v4
-      - uses: oven-sh/setup-bun@v2
-      - run: just check-miniapp
-
   build-miniapp:
-    name: Miniapp CI
+    name: Build Test - Miniapp
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
