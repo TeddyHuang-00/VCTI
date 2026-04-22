@@ -273,18 +273,17 @@ export function calculateAssessmentFromDimensionPosteriors(
 }
 
 export function serializeDimensionScores(result: AssessmentResult): string {
-  const params = new URLSearchParams();
+  const parts: string[] = [];
   for (const dimension of dimensions) {
     const score = result.dimensionScores[dimension.id];
-    params.set(
-      QUERY_PARAM_KEYS[dimension.id],
-      `${score.posterior.toFixed(SHARE_PRECISION)},${score.variance.toFixed(SHARE_PRECISION)}`
+    parts.push(
+      `${QUERY_PARAM_KEYS[dimension.id]}=${score.posterior.toFixed(SHARE_PRECISION)},${score.variance.toFixed(SHARE_PRECISION)}`
     );
   }
   if (result.code !== result.primaryCode) {
-    params.set(RESULT_CODE_KEY, result.code);
+    parts.push(`${RESULT_CODE_KEY}=${encodeURIComponent(result.code)}`);
   }
-  return params.toString();
+  return parts.join("&");
 }
 
 export interface ParsedDimensionScores {
@@ -300,7 +299,14 @@ export function parseDimensionScoresFromQuery(
   for (const dimension of dimensions) {
     const rawValue = searchParams.get(QUERY_PARAM_KEYS[dimension.id]);
     if (rawValue === null) return null;
-    const parts = rawValue.split(",");
+    // Handle both encoded (%2C) and decoded (,) comma separators
+    let decoded = rawValue;
+    try {
+      decoded = decodeURIComponent(rawValue);
+    } catch {
+      // rawValue may contain malformed percent sequences; use as-is
+    }
+    const parts = decoded.split(",");
     const posterior = Number(parts[0]);
     if (Number.isNaN(posterior)) return null;
     posteriors[dimension.id] = clamp(posterior, -2, 2);
