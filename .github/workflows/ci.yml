@@ -14,35 +14,35 @@ on:
   workflow_call:
 
 jobs:
-  format:
+  format-web:
     name: Code Format
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
       - uses: extractions/setup-just@v4
       - uses: oven-sh/setup-bun@v2
-      - run: just format
+      - run: just format-web
 
-  lint:
+  lint-web:
     name: Code Lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
       - uses: extractions/setup-just@v4
       - uses: oven-sh/setup-bun@v2
-      - run: just lint
+      - run: just lint-web
 
-  check:
+  check-web:
     name: Code Check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
       - uses: extractions/setup-just@v4
       - uses: oven-sh/setup-bun@v2
-      - run: just check
+      - run: just check-web
 
-  build:
-    name: Build Test
+  build-web:
+    name: Build Web App
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -60,7 +60,41 @@ jobs:
         env:
           PUBLIC_SITE_URL: https://example.github.io
           PUBLIC_BASE_PATH: /
+
+  format-miniapp:
+    name: Miniapp CI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: extractions/setup-just@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: just format-miniapp
+
+  lint-miniapp:
+    name: Miniapp CI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: extractions/setup-just@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: just lint-miniapp
+
+  check-miniapp:
+    name: Miniapp CI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: extractions/setup-just@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: just check-miniapp
+
+  build-miniapp:
+    name: Miniapp CI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: extractions/setup-just@v4
+      - uses: oven-sh/setup-bun@v2
       - run: just build-miniapp
         env:
           TARO_APP_ID: test-app-id
-

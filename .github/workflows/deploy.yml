@@ -51,7 +51,7 @@ jobs:
       - name: Build Documentation
         env:
           NODE_OPTIONS: --max_old_space_size=8192
-        run: just build
+        run: just build-web
 
       - name: Configure Pages
         uses: actions/configure-pages@v6

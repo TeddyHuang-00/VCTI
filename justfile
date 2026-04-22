@@ -25,6 +25,7 @@ MINIAPP_BUN := "bun run --cwd " + MINIAPP_ROOT + " --bun"
 
 # ---------- shared ----------
 
+[group("util")]
 @font:
     mkdir -p {{ FONT_CACHE_DIR }} {{ PUBLIC_FONT_DIR }}
     {{ WENKAI_CACHE_EXISTS }} || \
@@ -34,17 +35,29 @@ MINIAPP_BUN := "bun run --cwd " + MINIAPP_ROOT + " --bun"
     cp {{ WENKAI_CACHE_FILE }} {{ WENKAI_PUBLIC_FILE }}
     cp {{ XIHEI_CACHE_FILE }} {{ XIHEI_PUBLIC_FILE }}
 
+[group("util")]
 @assets:
     mkdir -p {{ WEB_PUBLIC }}/archetypes {{ MINIAPP_ASSETS }}/archetypes
     cp {{ ASSETS_SRC }}/archetypes/*.png {{ WEB_PUBLIC }}/archetypes/
     cp {{ ASSETS_SRC }}/archetypes/*.png {{ MINIAPP_ASSETS }}/archetypes/
 
+[group("util")]
 @font-version:
     echo "wenkai-version={{ WENKAI_VERSION }}"
     echo "xihei-version={{ XIHEI_VERSION }}"
 
+[group("util")]
 @install:
     bun install --frozen-lockfile
+
+[group("util")]
+@clean:
+    rm -rf dist node_modules .astro \
+      ./{{ WEB_ROOT }}/dist ./{{ WEB_ROOT }}/node_modules ./{{ WEB_ROOT }}/.astro \
+      ./{{ MINIAPP_ROOT }}/dist ./{{ MINIAPP_ROOT }}/node_modules
+
+@cache-clean-font:
+    rm -rf {{ FONT_CACHE_DIR }}
 
 # ---------- web ----------
 
@@ -122,25 +135,3 @@ fix-miniapp:
     {{ MINIAPP_BUN }} biome format --write
     {{ MINIAPP_BUN }} biome check --write
     {{ MINIAPP_BUN }} biome lint --write
-
-# ---------- defaults ----------
-
-format: format-web
-
-check: check-web
-
-lint: lint-web
-
-dev: dev-web
-
-build: build-web
-
-clean-build: clean && build-web
-
-clean:
-    rm -rf dist node_modules .astro \
-      ./{{ WEB_ROOT }}/dist ./{{ WEB_ROOT }}/node_modules ./{{ WEB_ROOT }}/.astro \
-      ./{{ MINIAPP_ROOT }}/dist ./{{ MINIAPP_ROOT }}/node_modules
-
-cache-clean-font:
-    rm -rf {{ FONT_CACHE_DIR }}
