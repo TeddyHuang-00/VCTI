@@ -11,7 +11,7 @@
   &__badge {
     display: inline-flex;
     padding: 6px 14px;
-    font-size: 13px;
+    font-size: 20px;
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.7px;
@@ -24,7 +24,7 @@
   &__title {
     display: block;
     margin-top: 6px;
-    font-size: 36px;
+    font-size: 54px;
     font-weight: 300;
     line-height: 1.1;
     letter-spacing: -0.72px;
@@ -35,7 +35,7 @@
   &__desc {
     display: block;
     margin-top: 8px;
-    font-size: 17px;
+    font-size: 26px;
     line-height: 1.6;
     color: #4e4e4e;
   }
@@ -56,7 +56,7 @@
 
   &__label {
     display: block;
-    font-size: 12px;
+    font-size: 18px;
     letter-spacing: 0.14px;
     color: #777169;
   }
@@ -64,7 +64,7 @@
   &__title {
     display: block;
     margin-top: 4px;
-    font-size: 28px;
+    font-size: 42px;
     font-weight: 300;
     line-height: 1.2;
     color: #000;
@@ -79,7 +79,7 @@
 
   &__counter {
     padding: 6px 14px;
-    font-size: 13px;
+    font-size: 20px;
     letter-spacing: 0.14px;
     color: #4e4e4e;
     background: #f5f5f5;
@@ -88,7 +88,7 @@
   }
 
   &__answered {
-    font-size: 13px;
+    font-size: 20px;
     letter-spacing: 0.14px;
     color: #777169;
   }
@@ -103,7 +103,7 @@
 .btn-reset {
   flex-shrink: 0;
   padding: 6px 16px;
-  font-size: 14px;
+  font-size: 21px;
   font-weight: 500;
   color: #000;
   background: rgba(245, 242, 239, 0.8);
@@ -125,7 +125,7 @@
   flex: 1;
   min-width: 0;
   padding: 14px 24px;
-  font-size: 15px;
+  font-size: 23px;
   font-weight: 500;
   color: #000 !important;
   background: #fff !important;
@@ -171,7 +171,7 @@
 
   &__prompt {
     display: block;
-    font-size: 19px;
+    font-size: 28px;
     line-height: 1.65;
     letter-spacing: 0.18px;
     color: #000;
@@ -218,7 +218,7 @@
 
   &__label {
     margin-top: 10px;
-    font-size: 13px;
+    font-size: 20px;
     line-height: 1.3;
     letter-spacing: 0.1px;
     text-align: center;

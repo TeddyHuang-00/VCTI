@@ -1,5 +1,4 @@
-import { useEffect, useMemo, useReducer } from "react";
-import { View, Text, Button as TaroButton } from "@tarojs/components";
+import { Button as TaroButton, Text, View } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import {
   canCompleteQuestionnaire,
@@ -10,6 +9,7 @@ import {
   questionnaireReducer,
 } from "@vcti/shared/app/questionnaire/session";
 import { likertLabels, serializeDimensionScores } from "@vcti/shared/domain/vcti";
+import { useEffect, useMemo, useReducer } from "react";
 import "./index.scss";
 
 const DOT_TONES: Record<number, { bg: string; text: string }> = {
@@ -158,8 +158,7 @@ export default function IndexPage() {
               dispatch({ type: "next" });
             }}
             disabled={
-              currentValue === undefined ||
-              state.currentIndex >= state.questionOrder.length - 1
+              currentValue === undefined || state.currentIndex >= state.questionOrder.length - 1
             }
           >
             下一题

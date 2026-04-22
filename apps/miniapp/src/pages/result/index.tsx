@@ -1,21 +1,28 @@
-import { useMemo, useState } from "react";
-import { View, Text, Image, Button, Canvas } from "@tarojs/components";
+import { Button, Canvas, Image, Text, View } from "@tarojs/components";
 import Taro, { useShareAppMessage } from "@tarojs/taro";
-import { renderShareCard } from "../../lib/renderShareCard";
 import {
   calculateAssessmentFromDimensionPosteriors,
-  parseDimensionScoresFromQuery,
-  parseResultCodeFromQuery,
   dimensions,
   MAX_REACHABLE_POSTERIOR,
+  parseDimensionScoresFromQuery,
+  parseResultCodeFromQuery,
 } from "@vcti/shared/domain/vcti";
 import type { AssessmentResult, DimensionId } from "@vcti/shared/domain/vcti/types";
 import { DIMENSION_COLORS, withAlpha, withSaturation } from "@vcti/shared/lib/colors";
+import { useMemo, useState } from "react";
+import { renderShareCard } from "../../lib/renderShareCard";
 import "./index.scss";
 
-const BAR_SIDE_PADDING_PX = 3;
+const CONTAINER_HEIGHT_PX = 16;
 const BAR_SOLID_HEIGHT_PX = 10;
 const BAR_UNCERTAINTY_HEIGHT_PX = 8;
+
+// Inset from container edge so each bar's endpoint circle center aligns with
+// the container's endpoint circle center at maximum extent.
+// Solid bar:    container r=8, bar r=5 → inset = 8 - 5 = 3px
+// Uncertainty:  container r=8, bar r=4 → inset = 8 - 4 = 4px
+const BAR_SOLID_TRACK_INSET_PX = CONTAINER_HEIGHT_PX / 2 - BAR_SOLID_HEIGHT_PX / 2;
+const BAR_UNCERTAINTY_TRACK_INSET_PX = CONTAINER_HEIGHT_PX / 2 - BAR_UNCERTAINTY_HEIGHT_PX / 2;
 
 function toPercent(value: number) {
   return Math.round(value * 100);
@@ -94,23 +101,42 @@ function DimensionBar({
   return (
     <View className="dimension-bar">
       <View className="dimension-bar__track">
-        <View className="dimension-bar__midline" />
+        {/* Solid bar track */}
         <View
-          className="dimension-bar__uncertainty"
+          className="dimension-bar__solid-track"
           style={{
-            ...uncertaintyStyle,
-            height: `${BAR_UNCERTAINTY_HEIGHT_PX}px`,
-            backgroundColor: toneColor(dimensionId, leaning, purity, 0.26),
+            left: `${BAR_SOLID_TRACK_INSET_PX}px`,
+            right: `${BAR_SOLID_TRACK_INSET_PX}px`,
           }}
-        />
+        >
+          <View className="dimension-bar__midline" />
+          <View
+            className="dimension-bar__solid"
+            style={{
+              ...solidStyle,
+              height: `${BAR_SOLID_HEIGHT_PX}px`,
+              backgroundColor: toneColor(dimensionId, leaning, purity),
+            }}
+          />
+        </View>
+
+        {/* Uncertainty bar track */}
         <View
-          className="dimension-bar__solid"
+          className="dimension-bar__uncertainty-track"
           style={{
-            ...solidStyle,
-            height: `${BAR_SOLID_HEIGHT_PX}px`,
-            backgroundColor: toneColor(dimensionId, leaning, purity),
+            left: `${BAR_UNCERTAINTY_TRACK_INSET_PX}px`,
+            right: `${BAR_UNCERTAINTY_TRACK_INSET_PX}px`,
           }}
-        />
+        >
+          <View
+            className="dimension-bar__uncertainty"
+            style={{
+              ...uncertaintyStyle,
+              height: `${BAR_UNCERTAINTY_HEIGHT_PX}px`,
+              backgroundColor: toneColor(dimensionId, leaning, purity, 0.26),
+            }}
+          />
+        </View>
       </View>
     </View>
   );
@@ -285,9 +311,7 @@ export default function ResultPage() {
       <View className="result-header">
         <View className="result-header__info">
           <Text className="result-header__label">你的编码人格</Text>
-          <Text className="result-header__hint">
-            保存图片，把你的 VCTI 人格发给同僚。
-          </Text>
+          <Text className="result-header__hint">保存图片，把你的 VCTI 人格发给同僚。</Text>
         </View>
         <View className="result-header__actions">
           <Button className="btn-save" onClick={handleSaveImage} loading={saving}>

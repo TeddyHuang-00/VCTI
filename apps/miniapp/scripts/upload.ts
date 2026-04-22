@@ -1,5 +1,5 @@
-import * as path from "node:path";
 import * as fs from "node:fs";
+import * as path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -31,7 +31,8 @@ if (!appid) {
 const privateKeyPath = path.resolve(ROOT, "private.key");
 if (!fs.existsSync(privateKeyPath)) {
   console.error(
-    "❌ private.key not found at", privateKeyPath,
+    "❌ private.key not found at",
+    privateKeyPath,
     "\n   Download it from WeChat Mini Program admin → Development → Development Settings → Generate private key."
   );
   process.exit(1);

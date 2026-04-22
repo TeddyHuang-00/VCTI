@@ -1,5 +1,5 @@
-import type { AssessmentResult, DimensionId } from "@vcti/shared/domain/vcti/types";
 import { dimensions, MAX_REACHABLE_POSTERIOR } from "@vcti/shared/domain/vcti";
+import type { AssessmentResult, DimensionId } from "@vcti/shared/domain/vcti/types";
 import { DIMENSION_COLORS, hexToRgb } from "@vcti/shared/lib/colors";
 
 const W = 375;
@@ -8,15 +8,10 @@ const PAD = 16;
 const CR = 20;
 const BAR_SH = 10;
 const BAR_UH = 8;
+const BAR_TRACK_H = BAR_SH + 6; // 16
+const UNCERTAINTY_TRACK_INSET = BAR_TRACK_H / 2 - BAR_UH / 2; // 8 - 4 = 4
 
-function rr(
-  ctx: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  w: number,
-  h: number,
-  r: number
-) {
+function rr(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
   ctx.beginPath();
   ctx.moveTo(x + r, y);
   ctx.lineTo(x + w - r, y);
@@ -85,9 +80,13 @@ function drawBar(
 
   // Uncertainty bar — range.start can be negative (extends to both sides of center)
   const uy = y + (trackH - BAR_UH) / 2;
-  const ux = x + half + range.start * half;
-  const uw = (range.end - range.start) * half;
-  fillRR(ctx, ux, uy, uw, BAR_UH, BAR_UH / 2, tone(dimId, leaning, 0.26));
+  const rawUx = x + half + range.start * half;
+  const rawUw = (range.end - range.start) * half;
+  const minUx = x + UNCERTAINTY_TRACK_INSET;
+  const maxUx = x + w - UNCERTAINTY_TRACK_INSET;
+  const clampedUx = Math.max(minUx, rawUx);
+  const clampedUw = Math.min(maxUx, rawUx + rawUw) - clampedUx;
+  fillRR(ctx, clampedUx, uy, clampedUw, BAR_UH, BAR_UH / 2, tone(dimId, leaning, 0.26));
 
   // Solid bar — when width < height, draw a centered circle instead
   const sy = y + (trackH - BAR_SH) / 2;
@@ -97,7 +96,15 @@ function drawBar(
     const sx = midX - pos;
     fillRR(ctx, sx, sy, pos + BAR_SH / 2, BAR_SH, BAR_SH / 2, tone(dimId, leaning, 0.92));
   } else {
-    fillRR(ctx, midX - BAR_SH / 2, sy, pos + BAR_SH / 2, BAR_SH, BAR_SH / 2, tone(dimId, leaning, 0.92));
+    fillRR(
+      ctx,
+      midX - BAR_SH / 2,
+      sy,
+      pos + BAR_SH / 2,
+      BAR_SH,
+      BAR_SH / 2,
+      tone(dimId, leaning, 0.92)
+    );
   }
 }
 
@@ -113,7 +120,10 @@ function truncateText(ctx: CanvasRenderingContext2D, text: string, maxWidth: num
 function loadCanvasImage(canvas: HTMLCanvasElement, src: string): Promise<CanvasImageSource> {
   // WeChat Canvas 2D API (weapp)
   if (typeof (canvas as any).createImage === "function") {
-    const img = (canvas as any).createImage() as CanvasImageSource & { onload: () => void; onerror: () => void };
+    const img = (canvas as any).createImage() as CanvasImageSource & {
+      onload: () => void;
+      onerror: () => void;
+    };
     return new Promise((resolve, reject) => {
       img.onload = () => resolve(img);
       img.onerror = reject;
@@ -280,7 +290,6 @@ export async function renderShareCard(
     ctx.fillText(rightLabel, cx + 12 + barW, barY + BAR_SH + 10);
     ctx.textAlign = "left";
   }
-
 }
 
 /** Draw just the mini program code image onto the canvas (for direct save). */

@@ -1,6 +1,6 @@
-import sharp from "sharp";
 import fs from "node:fs";
 import path from "node:path";
+import sharp from "sharp";
 
 const EXTENSIONS = new Set([".png", ".jpg", ".jpeg"]);
 
@@ -25,7 +25,9 @@ async function compressFile(filePath: string): Promise<void> {
   if (output.length < originalSize) {
     fs.writeFileSync(filePath, output);
     const saved = ((1 - output.length / originalSize) * 100).toFixed(1);
-    console.log(`  compressed ${path.basename(filePath)}: ${(originalSize / 1024).toFixed(0)}K → ${(output.length / 1024).toFixed(0)}K (${saved}% saved)`);
+    console.log(
+      `  compressed ${path.basename(filePath)}: ${(originalSize / 1024).toFixed(0)}K → ${(output.length / 1024).toFixed(0)}K (${saved}% saved)`
+    );
   }
 }
 
