@@ -9,6 +9,7 @@ import {
   questionnaireReducer,
 } from "@vcti/shared/app/questionnaire/session";
 import { likertLabels, serializeDimensionScores } from "@vcti/shared/domain/vcti";
+import type { ChoiceQuestion } from "@vcti/shared/domain/vcti/types";
 import { useEffect, useMemo, useReducer } from "react";
 import "./index.scss";
 
@@ -76,6 +77,34 @@ function LikertDots({
   );
 }
 
+function ChoiceInput({
+  choices,
+  value,
+  onSelect,
+}: {
+  choices: ChoiceQuestion["choices"];
+  value?: number;
+  onSelect: (nextValue: number) => void;
+}) {
+  return (
+    <View className="choice-options">
+      {choices.map((choice) => {
+        const selected = value === choice.value;
+        return (
+          <View
+            key={choice.value}
+            className={`choice-option ${selected ? "choice-option--selected" : ""}`}
+            onClick={() => onSelect(choice.value)}
+          >
+            <Text className="choice-option__label">{choice.label}</Text>
+            {choice.hint && <Text className="choice-option__hint">{choice.hint}</Text>}
+          </View>
+        );
+      })}
+    </View>
+  );
+}
+
 export default function IndexPage() {
   const [state, dispatch] = useReducer(questionnaireReducer, undefined, () =>
     createInitialQuestionnaireState()
@@ -100,7 +129,7 @@ export default function IndexPage() {
       <View className="hero">
         <View className="hero__badge">VCTI</View>
         <Text className="hero__title">Vibe-Coder{"\n"}Type Indicator</Text>
-        <Text className="hero__desc">22 道题，5 分钟，破译你的编程人格暗码。</Text>
+        <Text className="hero__desc">23 道题，5 分钟，破译你的编程人格暗码。</Text>
       </View>
 
       <View className="card">
@@ -130,16 +159,30 @@ export default function IndexPage() {
         <View className="question-panel">
           <Text className="question-panel__prompt">{currentQuestion.prompt}</Text>
           <View className="question-panel__dots">
-            <LikertDots
-              value={currentValue}
-              onSelect={(nextValue) =>
-                dispatch({
-                  type: "answer",
-                  questionId: currentQuestion.id,
-                  value: nextValue,
-                })
-              }
-            />
+            {currentQuestion.input === "choice" ? (
+              <ChoiceInput
+                choices={(currentQuestion as ChoiceQuestion).choices}
+                value={currentValue}
+                onSelect={(nextValue) =>
+                  dispatch({
+                    type: "answer",
+                    questionId: currentQuestion.id,
+                    value: nextValue,
+                  })
+                }
+              />
+            ) : (
+              <LikertDots
+                value={currentValue}
+                onSelect={(nextValue) =>
+                  dispatch({
+                    type: "answer",
+                    questionId: currentQuestion.id,
+                    value: nextValue,
+                  })
+                }
+              />
+            )}
           </View>
         </View>
 

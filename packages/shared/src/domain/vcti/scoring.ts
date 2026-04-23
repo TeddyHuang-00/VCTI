@@ -13,9 +13,9 @@ import { DIMENSIONS } from "./types";
 export const PRIOR_VARIANCE = 0.3;
 export const N_QUESTIONS = 5;
 const SCALE_MAX = 15;
-const NEUTRAL_THRESHOLD = 0.3;
-const HALL_DV_THRESHOLD = 1.05;
-const HALL_VIBE_INDEX_THRESHOLD = 0.85;
+const NEUTRAL_THRESHOLD = 0.5;
+const HALL_DV_THRESHOLD = 1.5;
+const HALL_VIBE_INDEX_THRESHOLD = 1.0;
 const SHARE_PRECISION = 3;
 
 const QUERY_PARAM_KEYS: Record<DimensionId, string> = {
@@ -30,6 +30,7 @@ const RESULT_CODE_KEY = "code";
 const MAX_REACHABLE_POSTERIOR = SCALE_MAX / N_QUESTIONS;
 
 const coreQuestions = questions.filter((q) => q.category === "core");
+const coreQuestionIds = new Set(coreQuestions.map((q) => q.id));
 const scoredQuestions = questions.filter((q) => q.category !== "scenario");
 
 export { MAX_REACHABLE_POSTERIOR };
@@ -102,7 +103,7 @@ function buildDimensionScoreFromPosterior(
 }
 
 /**
- * Compute the ±2σ uncertainty range around the recovered normalized score, in purity units.
+ * Compute the ±σ uncertainty range around the recovered normalized score, in purity units.
  * The posterior variance can be written as σ'² = σ₀²·σ² / (σ² + N·σ₀²).
  * Since display purity is based on the recovered normalized score μ rather than the shrunk posterior μ',
  * convert the posterior SD back onto the normalized-score scale before normalizing.
@@ -158,8 +159,7 @@ function detectEasterEgg(
   }
 
   const allNearStrictVibe = Object.values(scores).every((s) => s.raw >= SCALE_MAX - 1);
-  const hasImperfectDimension = Object.values(scores).some((s) => s.raw < SCALE_MAX);
-  if (allNearStrictVibe && hasImperfectDimension && answers.SIG1 === -3) {
+  if (allNearStrictVibe && answers.SIG1 === -3) {
     return "BUG";
   }
 
@@ -225,7 +225,7 @@ export function calculateAssessment(answers: AnswerMap): AssessmentResult {
   for (const [questionId, answer] of Object.entries(answers)) {
     if (answer === undefined) continue;
 
-    if (Math.abs(answer) === 3) {
+    if (coreQuestionIds.has(questionId) && Math.abs(answer) === 3) {
       answeredExtremes += 1;
     }
 

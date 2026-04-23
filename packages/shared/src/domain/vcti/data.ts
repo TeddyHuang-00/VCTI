@@ -1,4 +1,9 @@
-import type { DimensionDescriptor, PersonalityProfile, Question, ResultCode } from "./types";
+import type {
+  DimensionDescriptor,
+  PersonalityProfile,
+  Question,
+  ResultCode,
+} from "./types";
 
 export const dimensions: DimensionDescriptor[] = [
   {
@@ -90,7 +95,8 @@ export const questions: Question[] = [
   },
   {
     id: "MA4",
-    prompt: "我会花时间微调 Prompt，直到 AI 给出令我满意的答案，而不是自己修改代码。",
+    prompt:
+      "我会花时间微调 Prompt，直到 AI 给出令我满意的答案，而不是自己修改代码。",
     dimension: "MA",
     category: "core",
     input: "likert",
@@ -242,9 +248,21 @@ export const questions: Question[] = [
     category: "scenario",
     input: "choice",
     choices: [
-      { value: -3, label: "开 Debugger 追调用栈", hint: "审计流" },
-      { value: 0, label: "把报错丢给 AI 看建议", hint: "混合流" },
-      { value: 3, label: "重启 IDE/电脑并祈祷", hint: "权限流" },
+      {
+        value: -3,
+        label: "开 Debugger 追调用栈",
+        // hint: "审计流",
+      },
+      {
+        value: 0,
+        label: "把报错丢给 AI 看建议",
+        // hint: "混合流",
+      },
+      {
+        value: 3,
+        label: "重启 IDE/电脑并祈祷",
+        // hint: "权限流",
+      },
     ],
     note: "用于彩蛋 `SUDO` 检测。",
   },
@@ -267,7 +285,7 @@ export const questions: Question[] = [
 ];
 
 export const questionnaireQuestions = questions.filter(
-  (question) => question.category !== "scenario"
+  (question) => question.category !== "scenario" || question.id === "SCN2",
 );
 
 export const likertLabels = [

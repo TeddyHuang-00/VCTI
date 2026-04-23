@@ -7,6 +7,7 @@ import {
   questionnaireReducer,
 } from "@vcti/shared/app/questionnaire/session";
 import { likertLabels, serializeDimensionScores } from "@vcti/shared/domain/vcti";
+import type { ChoiceQuestion } from "@vcti/shared/domain/vcti/types";
 import { useEffect, useMemo, useReducer } from "react";
 
 interface VctiAppProps {
@@ -75,6 +76,42 @@ function LikertDots({
   );
 }
 
+function ChoiceInput({
+  choices,
+  value,
+  onSelect,
+}: {
+  choices: ChoiceQuestion["choices"];
+  value?: number;
+  onSelect: (nextValue: number) => void;
+}) {
+  return (
+    <div className="flex flex-col gap-2 sm:gap-3">
+      {choices.map((choice) => {
+        const selected = value === choice.value;
+        return (
+          <button
+            key={choice.value}
+            type="button"
+            aria-pressed={selected}
+            onClick={() => onSelect(choice.value)}
+            className={`flex flex-col gap-1 p-4 text-left rounded-2xl transition-all duration-200 border-2 ${
+              selected
+                ? "border-[#93c5fd] bg-[#eff6ff] ring-2 ring-[#93c5fd]/30"
+                : "border-[#e8e4de] bg-white hover:border-[#c9c4be] hover:bg-[#fafaf9]"
+            }`}
+          >
+            <span className="text-[0.94rem] leading-5 font-medium text-black">{choice.label}</span>
+            {choice.hint && (
+              <span className="text-[0.82rem] leading-4 text-warmgray">{choice.hint}</span>
+            )}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function VctiApp({ basePath = "/" }: VctiAppProps) {
   const [state, dispatch] = useReducer(questionnaireReducer, undefined, () =>
     createInitialQuestionnaireState()
@@ -107,7 +144,7 @@ export default function VctiApp({ basePath = "/" }: VctiAppProps) {
           Type Indicator
         </h1>
         <p className="max-w-2xl text-[1.05rem] leading-[1.6] tracking-[0.18px] text-graphite">
-          22 道题，5 分钟，破译你的编程人格暗码。
+          23 道题，5 分钟，破译你的编程人格暗码。
         </p>
       </section>
 
@@ -150,16 +187,30 @@ export default function VctiApp({ basePath = "/" }: VctiAppProps) {
           </p>
 
           <div className="mt-8">
-            <LikertDots
-              value={currentValue}
-              onSelect={(nextValue) =>
-                dispatch({
-                  type: "answer",
-                  questionId: currentQuestion.id,
-                  value: nextValue,
-                })
-              }
-            />
+            {currentQuestion.input === "choice" ? (
+              <ChoiceInput
+                choices={currentQuestion.choices}
+                value={currentValue}
+                onSelect={(nextValue) =>
+                  dispatch({
+                    type: "answer",
+                    questionId: currentQuestion.id,
+                    value: nextValue,
+                  })
+                }
+              />
+            ) : (
+              <LikertDots
+                value={currentValue}
+                onSelect={(nextValue) =>
+                  dispatch({
+                    type: "answer",
+                    questionId: currentQuestion.id,
+                    value: nextValue,
+                  })
+                }
+              />
+            )}
           </div>
         </article>
 

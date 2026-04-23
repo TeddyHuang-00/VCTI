@@ -182,6 +182,42 @@
   }
 }
 
+.choice-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.choice-option {
+  padding: 20px 16px;
+  border-radius: 16px;
+  border: 2px solid #e8e4de;
+  background: #fff;
+  transition: all 200ms;
+
+  &--selected {
+    border-color: #93c5fd;
+    background: #eff6ff;
+    box-shadow: 0 0 0 4px rgba(147, 197, 253, 0.18);
+  }
+
+  &__label {
+    display: block;
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 1.45;
+    color: #000;
+  }
+
+  &__hint {
+    display: block;
+    margin-top: 4px;
+    font-size: 20px;
+    line-height: 1.4;
+    color: #777169;
+  }
+}
+
 .likert-dots {
   display: flex;
   gap: 2px;

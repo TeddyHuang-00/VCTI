@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bunx --bun astro check)",
+      "Bash(biome check *)",
+      "Bash(biome format *)",
+      "WebSearch",
+      "WebFetch(domain:www.npmjs.com)",
+      "WebFetch(domain:github.com)",
+      "Bash(awk '{print $NF}')",
+      "WebFetch(domain:developers.weixin.qq.com)",
+      "Bash(bun pm *)",
+      "Bash(bun --version)",
+      "Bash(bunx ctx7@latest docs *)",
+      "Bash(just preview-miniapp *)",
+      "Bash(bun add *)",
+      "WebFetch(domain:docs.taro.zone)",
+      "Bash(just check *)"
+    ]
+  }
+}
