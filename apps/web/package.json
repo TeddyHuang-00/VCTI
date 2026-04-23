@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "0.9.8",
-    "@biomejs/biome": "2.4.12",
+    "@biomejs/biome": "2.4.13",
     "@playform/compress": "0.2.3",
     "@tailwindcss/vite": "4.2.4",
     "@types/node": "25.6.0",
