@@ -16,14 +16,14 @@
     "@astrojs/react": "5.0.4",
     "@resvg/resvg-wasm": "2.6.2",
     "@vcti/shared": "workspace:*",
-    "astro": "6.1.9",
+    "astro": "6.1.10",
     "qrcode": "1.5.4",
     "react": "19.2.5",
     "react-dom": "19.2.5",
     "satori": "0.26.0"
   },
   "devDependencies": {
-    "@astrojs/check": "0.9.8",
+    "@astrojs/check": "0.9.9",
     "@biomejs/biome": "2.4.13",
     "@playform/compress": "0.2.3",
     "@tailwindcss/vite": "4.2.4",
