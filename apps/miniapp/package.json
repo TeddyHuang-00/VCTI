@@ -34,7 +34,7 @@
     "@types/react": "19.2.15",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "4.7.0",
-    "miniprogram-ci": "2.1.40",
+    "miniprogram-ci": "2.1.41",
     "sass-embedded": "1.100.0",
     "sharp": "^0.34.5",
     "typescript": "5.9.3",
