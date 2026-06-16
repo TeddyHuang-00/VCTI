@@ -16,7 +16,7 @@
     "@astrojs/react": "5.0.7",
     "@resvg/resvg-wasm": "2.6.2",
     "@vcti/shared": "workspace:*",
-    "astro": "6.4.6",
+    "astro": "6.4.7",
     "qrcode": "1.5.4",
     "react": "19.2.7",
     "react-dom": "19.2.7",
