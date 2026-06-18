@@ -22,7 +22,7 @@ jobs:
         app: [web, miniapp]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: extractions/setup-just@v4
       - uses: oven-sh/setup-bun@v2
       - run: just format-${{ matrix.app }}
@@ -35,7 +35,7 @@ jobs:
         app: [web, miniapp]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: extractions/setup-just@v4
       - uses: oven-sh/setup-bun@v2
       - run: just lint-${{ matrix.app }}
@@ -48,7 +48,7 @@ jobs:
         app: [web, miniapp]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: extractions/setup-just@v4
       - uses: oven-sh/setup-bun@v2
       - run: just check-${{ matrix.app }}
@@ -61,7 +61,7 @@ jobs:
         app: [web, miniapp]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: extractions/setup-just@v4
       - uses: oven-sh/setup-bun@v2
       - name: Get font version
