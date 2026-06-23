@@ -43,7 +43,7 @@ jobs:
           just font-version | tee -a "$GITHUB_OUTPUT"
 
       - name: Cache Font
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: .cache/fonts
           key: cache-font-${{ steps.font-version.outputs.wenkai-version }}-${{ steps.font-version.outputs.xihei-version }}
