@@ -69,7 +69,7 @@ jobs:
         id: font-version
         run: |
           just font-version | tee -a "$GITHUB_OUTPUT"
-      - uses: actions/cache@v5
+      - uses: actions/cache@v6
         if: matrix.app == 'web'
         with:
           path: .cache/fonts
