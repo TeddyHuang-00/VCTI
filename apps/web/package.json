@@ -31,7 +31,7 @@
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
     "astro-og": "0.3.2",
-    "rustywind": "0.24.3",
+    "rustywind": "0.25.0",
     "tailwindcss": "4.3.2",
     "typescript": "6.0.3"
   },
