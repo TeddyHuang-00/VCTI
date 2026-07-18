@@ -18,7 +18,7 @@
     "@tarojs/plugin-platform-weapp": "4.2.1",
     "@tarojs/react": "4.2.1",
     "@tarojs/runtime": "4.2.1",
-    "@tarojs/shared": "4.2.0",
+    "@tarojs/shared": "4.2.1",
     "@tarojs/taro": "4.2.0",
     "@vcti/shared": "workspace:*",
     "qrcode": "1.5.4",
