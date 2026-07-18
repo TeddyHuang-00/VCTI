@@ -17,7 +17,7 @@
         "@tarojs/plugin-platform-h5": "4.2.1",
         "@tarojs/plugin-platform-weapp": "4.2.1",
         "@tarojs/react": "4.2.1",
-        "@tarojs/runtime": "4.2.0",
+        "@tarojs/runtime": "4.2.1",
         "@tarojs/shared": "4.2.0",
         "@tarojs/taro": "4.2.0",
         "@vcti/shared": "workspace:*",
@@ -1037,7 +1037,7 @@
 
     "@tarojs/runner-utils": ["@tarojs/runner-utils@4.2.0", "", { "dependencies": { "@tarojs/helper": "4.2.0", "rollup": "^3.29.4", "scss-bundle": "^3.1.2" } }, "sha512-M79iDSKjO3FNBBWfNiFlaihLsHGSQaXjSCglH0d9G1a/YWx2hfKtZaT67ca86YkfR/glz6ZBtIY5PTNQlED8AA=="],
 
-    "@tarojs/runtime": ["@tarojs/runtime@4.2.0", "", { "dependencies": { "@tarojs/shared": "4.2.0", "tslib": "^2.6.2" } }, "sha512-PztaDI5DfOCIYPn0/VeoZgtsKpE1Z/pXjrlB5w+9gZfM6bZZeS0j/GRdfHBz/BdmHMFYmQ+2HbZJ+sVj5DIUzA=="],
+    "@tarojs/runtime": ["@tarojs/runtime@4.2.1", "", { "dependencies": { "@tarojs/shared": "4.2.1", "tslib": "^2.6.2" } }, "sha512-7PgK9ohtmkTkY1zINx8hTQ8pe/1Ees8bYYkcb5w/pP+MnJt27xpKli3Tyeq6+wKwAHL58om+MizCz215SXoVcw=="],
 
     "@tarojs/service": ["@tarojs/service@4.2.1", "", { "dependencies": { "@tarojs/helper": "4.2.1", "@tarojs/runner-utils": "4.2.1", "@tarojs/shared": "4.2.1", "joi": "^17.12.3", "lodash": "^4.17.21", "ora": "^5.4.1", "resolve": "^1.22.8", "tapable": "^2.2.1", "webpack-merge": "^5.10.0" } }, "sha512-d3xHGyJQBsMmYp6ajqR2DyykQb5rave9Sy1Nry737t47YK9r3upPdeHdsYC96TQORK0DfiJd1ZH6j62IkVXXfw=="],
 
@@ -4229,9 +4229,9 @@
 
     "@tailwindcss/vite/vite": ["vite@8.0.16", "", { "dependencies": { "lightningcss": "^1.32.0", "picomatch": "^4.0.4", "postcss": "^8.5.15", "rolldown": "1.0.3", "tinyglobby": "^0.2.17" }, "optionalDependencies": { "fsevents": "~2.3.3" }, "peerDependencies": { "@types/node": "^20.19.0 || >=22.12.0", "@vitejs/devtools": "^0.1.18", "esbuild": "^0.27.0 || ^0.28.0", "jiti": ">=1.21.0", "less": "^4.0.0", "sass": "^1.70.0", "sass-embedded": "^1.70.0", "stylus": ">=0.54.8", "sugarss": "^5.0.0", "terser": "^5.16.0", "tsx": "^4.8.1", "yaml": "^2.4.2" }, "optionalPeers": ["@types/node", "@vitejs/devtools", "esbuild", "jiti", "less", "sass", "sass-embedded", "stylus", "sugarss", "terser", "tsx", "yaml"], "bin": { "vite": "bin/vite.js" } }, "sha512-h9bXPmJichP5fLmVQo3PyaGSDE2n3aPuomeAlVRm0JLmt4rY6zmPKd59HYI4LNW8oTK7tlTsuC7l/m7awx9Jcw=="],
 
-    "@tarojs/cli/@tarojs/shared": ["@tarojs/shared@4.2.1", "", {}, "sha512-rAQxBt490zjU9T7qGVmHivfVH1O02oQX7ZtaxVEEguwxVBqo4kr8hNs9v3OyPP4LiyROrwszT70cDkuynHpLUA=="],
+    "@tarojs/api/@tarojs/runtime": ["@tarojs/runtime@4.2.0", "", { "dependencies": { "@tarojs/shared": "4.2.0", "tslib": "^2.6.2" } }, "sha512-PztaDI5DfOCIYPn0/VeoZgtsKpE1Z/pXjrlB5w+9gZfM6bZZeS0j/GRdfHBz/BdmHMFYmQ+2HbZJ+sVj5DIUzA=="],
 
-    "@tarojs/components/@tarojs/runtime": ["@tarojs/runtime@4.2.1", "", { "dependencies": { "@tarojs/shared": "4.2.1", "tslib": "^2.6.2" } }, "sha512-7PgK9ohtmkTkY1zINx8hTQ8pe/1Ees8bYYkcb5w/pP+MnJt27xpKli3Tyeq6+wKwAHL58om+MizCz215SXoVcw=="],
+    "@tarojs/cli/@tarojs/shared": ["@tarojs/shared@4.2.1", "", {}, "sha512-rAQxBt490zjU9T7qGVmHivfVH1O02oQX7ZtaxVEEguwxVBqo4kr8hNs9v3OyPP4LiyROrwszT70cDkuynHpLUA=="],
 
     "@tarojs/components/@tarojs/shared": ["@tarojs/shared@4.2.1", "", {}, "sha512-rAQxBt490zjU9T7qGVmHivfVH1O02oQX7ZtaxVEEguwxVBqo4kr8hNs9v3OyPP4LiyROrwszT70cDkuynHpLUA=="],
 
@@ -4257,13 +4257,9 @@
 
     "@tarojs/plugin-doctor/glob": ["glob@10.2.6", "", { "dependencies": { "foreground-child": "^3.1.0", "jackspeak": "^2.0.3", "minimatch": "^9.0.1", "minipass": "^5.0.0 || ^6.0.2", "path-scurry": "^1.7.0" }, "bin": { "glob": "dist/cjs/src/bin.js" } }, "sha512-U/rnDpXJGF414QQQZv5uVsabTVxMSwzS5CH0p3DRCIV6ownl4f7PzGnkGmvlum2wB+9RlJWJZ6ACU1INnBqiPA=="],
 
-    "@tarojs/plugin-framework-react/@tarojs/runtime": ["@tarojs/runtime@4.2.1", "", { "dependencies": { "@tarojs/shared": "4.2.1", "tslib": "^2.6.2" } }, "sha512-7PgK9ohtmkTkY1zINx8hTQ8pe/1Ees8bYYkcb5w/pP+MnJt27xpKli3Tyeq6+wKwAHL58om+MizCz215SXoVcw=="],
-
     "@tarojs/plugin-framework-react/@tarojs/shared": ["@tarojs/shared@4.2.1", "", {}, "sha512-rAQxBt490zjU9T7qGVmHivfVH1O02oQX7ZtaxVEEguwxVBqo4kr8hNs9v3OyPP4LiyROrwszT70cDkuynHpLUA=="],
 
     "@tarojs/plugin-framework-react/acorn": ["acorn@8.16.0", "", { "bin": { "acorn": "bin/acorn" } }, "sha512-UVJyE9MttOsBQIDKw1skb9nAwQuR5wuGD3+82K6JgJlm/Y+KI92oNsMNGZCYdDsVtRHSak0pcV5Dno5+4jh9sw=="],
-
-    "@tarojs/plugin-platform-h5/@tarojs/runtime": ["@tarojs/runtime@4.2.1", "", { "dependencies": { "@tarojs/shared": "4.2.1", "tslib": "^2.6.2" } }, "sha512-7PgK9ohtmkTkY1zINx8hTQ8pe/1Ees8bYYkcb5w/pP+MnJt27xpKli3Tyeq6+wKwAHL58om+MizCz215SXoVcw=="],
 
     "@tarojs/plugin-platform-h5/@tarojs/shared": ["@tarojs/shared@4.2.1", "", {}, "sha512-rAQxBt490zjU9T7qGVmHivfVH1O02oQX7ZtaxVEEguwxVBqo4kr8hNs9v3OyPP4LiyROrwszT70cDkuynHpLUA=="],
 
@@ -4271,19 +4267,17 @@
 
     "@tarojs/plugin-platform-weapp/@tarojs/shared": ["@tarojs/shared@4.2.1", "", {}, "sha512-rAQxBt490zjU9T7qGVmHivfVH1O02oQX7ZtaxVEEguwxVBqo4kr8hNs9v3OyPP4LiyROrwszT70cDkuynHpLUA=="],
 
-    "@tarojs/react/@tarojs/runtime": ["@tarojs/runtime@4.2.1", "", { "dependencies": { "@tarojs/shared": "4.2.1", "tslib": "^2.6.2" } }, "sha512-7PgK9ohtmkTkY1zINx8hTQ8pe/1Ees8bYYkcb5w/pP+MnJt27xpKli3Tyeq6+wKwAHL58om+MizCz215SXoVcw=="],
-
     "@tarojs/react/@tarojs/shared": ["@tarojs/shared@4.2.1", "", {}, "sha512-rAQxBt490zjU9T7qGVmHivfVH1O02oQX7ZtaxVEEguwxVBqo4kr8hNs9v3OyPP4LiyROrwszT70cDkuynHpLUA=="],
 
     "@tarojs/react/react": ["react@18.3.1", "", { "dependencies": { "loose-envify": "^1.1.0" } }, "sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ=="],
-
-    "@tarojs/router/@tarojs/runtime": ["@tarojs/runtime@4.2.1", "", { "dependencies": { "@tarojs/shared": "4.2.1", "tslib": "^2.6.2" } }, "sha512-7PgK9ohtmkTkY1zINx8hTQ8pe/1Ees8bYYkcb5w/pP+MnJt27xpKli3Tyeq6+wKwAHL58om+MizCz215SXoVcw=="],
 
     "@tarojs/router/@tarojs/shared": ["@tarojs/shared@4.2.1", "", {}, "sha512-rAQxBt490zjU9T7qGVmHivfVH1O02oQX7ZtaxVEEguwxVBqo4kr8hNs9v3OyPP4LiyROrwszT70cDkuynHpLUA=="],
 
     "@tarojs/router/@tarojs/taro": ["@tarojs/taro@4.2.1", "", { "dependencies": { "@tarojs/api": "4.2.1", "@tarojs/runtime": "4.2.1", "@types/postcss-url": "^10.0.4" }, "peerDependencies": { "@tarojs/components": "4.2.1", "@tarojs/helper": "4.2.1", "@tarojs/shared": "4.2.1", "@types/react": "^18", "html-webpack-plugin": "^5", "postcss": "^8", "rollup": "^3", "vue": "^3", "webpack": "^5", "webpack-chain": "^6", "webpack-dev-server": "^4" }, "optionalPeers": ["@types/react", "html-webpack-plugin", "rollup", "vue", "webpack", "webpack-chain", "webpack-dev-server"] }, "sha512-xH8vHwrydO8YonwhEcQ1E61wvm5c5NevLKXQUTSYjze0lu0D4WqH9qSjEiCCIHtZ6KTJ/2Cvs8/murq14Z//IQ=="],
 
     "@tarojs/runner-utils/@tarojs/helper": ["@tarojs/helper@4.2.0", "", { "dependencies": { "@babel/core": "^7.24.4", "@babel/generator": "^7.24.4", "@babel/parser": "^7.24.4", "@babel/traverse": "^7.24.1", "@babel/types": "^7.24.0", "@swc/core": "1.3.96", "@swc/register": "0.1.10", "ansi-escapes": "^4.3.2", "chalk": "^4.1.2", "chokidar": "^3.6.0", "cross-spawn": "^7.0.3", "debug": "^4.3.4", "dotenv": "^16.4.5", "dotenv-expand": "^11.0.6", "esbuild": "~0.21.0", "find-yarn-workspace-root": "^2.0.0", "fs-extra": "^11.2.0", "lodash": "^4.17.21", "require-from-string": "^2.0.2", "resolve": "^1.22.8", "supports-hyperlinks": "^3.0.0" } }, "sha512-F8D5EbwS/d0Kkh4PWFHhXoM1l1Iy2ZxjsWmXEkUratiq+CktogjQDa87pY+lyPLFsArA8oAd01p7rsQmVSDfoA=="],
+
+    "@tarojs/runtime/@tarojs/shared": ["@tarojs/shared@4.2.1", "", {}, "sha512-rAQxBt490zjU9T7qGVmHivfVH1O02oQX7ZtaxVEEguwxVBqo4kr8hNs9v3OyPP4LiyROrwszT70cDkuynHpLUA=="],
 
     "@tarojs/service/@tarojs/runner-utils": ["@tarojs/runner-utils@4.2.1", "", { "dependencies": { "@tarojs/helper": "4.2.1", "rollup": "^3.29.4", "scss-bundle": "^3.1.2" } }, "sha512-9cSNRGJkFJARIrYWzXosHbr8zrGPai4m4dXyTWkO34HIY0HQ5Ad1UnOWBtLr7I+deFfqS22kBmPYrqCyhW3vWg=="],
 
@@ -4293,15 +4287,17 @@
 
     "@tarojs/taro/@tarojs/helper": ["@tarojs/helper@4.2.0", "", { "dependencies": { "@babel/core": "^7.24.4", "@babel/generator": "^7.24.4", "@babel/parser": "^7.24.4", "@babel/traverse": "^7.24.1", "@babel/types": "^7.24.0", "@swc/core": "1.3.96", "@swc/register": "0.1.10", "ansi-escapes": "^4.3.2", "chalk": "^4.1.2", "chokidar": "^3.6.0", "cross-spawn": "^7.0.3", "debug": "^4.3.4", "dotenv": "^16.4.5", "dotenv-expand": "^11.0.6", "esbuild": "~0.21.0", "find-yarn-workspace-root": "^2.0.0", "fs-extra": "^11.2.0", "lodash": "^4.17.21", "require-from-string": "^2.0.2", "resolve": "^1.22.8", "supports-hyperlinks": "^3.0.0" } }, "sha512-F8D5EbwS/d0Kkh4PWFHhXoM1l1Iy2ZxjsWmXEkUratiq+CktogjQDa87pY+lyPLFsArA8oAd01p7rsQmVSDfoA=="],
 
+    "@tarojs/taro/@tarojs/runtime": ["@tarojs/runtime@4.2.0", "", { "dependencies": { "@tarojs/shared": "4.2.0", "tslib": "^2.6.2" } }, "sha512-PztaDI5DfOCIYPn0/VeoZgtsKpE1Z/pXjrlB5w+9gZfM6bZZeS0j/GRdfHBz/BdmHMFYmQ+2HbZJ+sVj5DIUzA=="],
+
     "@tarojs/taro/@types/react": ["@types/react@18.3.28", "", { "dependencies": { "@types/prop-types": "*", "csstype": "^3.2.2" } }, "sha512-z9VXpC7MWrhfWipitjNdgCauoMLRdIILQsAEV+ZesIzBq/oUlxk0m3ApZuMFCXdnS4U7KrI+l3WRUEGQ8K1QKw=="],
 
     "@tarojs/taro-h5/@tarojs/api": ["@tarojs/api@4.2.1", "", { "peerDependencies": { "@tarojs/runtime": "4.2.1", "@tarojs/shared": "4.2.1" } }, "sha512-GlgqH/mx0EC+tYrcUnqa7vsGSOaAzIJNxvDcUESO6FiKb1xLESGmgGbaiEkqw29Nx/3j3lEXjHrCHJUdGy3X2Q=="],
 
-    "@tarojs/taro-h5/@tarojs/runtime": ["@tarojs/runtime@4.2.1", "", { "dependencies": { "@tarojs/shared": "4.2.1", "tslib": "^2.6.2" } }, "sha512-7PgK9ohtmkTkY1zINx8hTQ8pe/1Ees8bYYkcb5w/pP+MnJt27xpKli3Tyeq6+wKwAHL58om+MizCz215SXoVcw=="],
-
     "@tarojs/taro-h5/@tarojs/shared": ["@tarojs/shared@4.2.1", "", {}, "sha512-rAQxBt490zjU9T7qGVmHivfVH1O02oQX7ZtaxVEEguwxVBqo4kr8hNs9v3OyPP4LiyROrwszT70cDkuynHpLUA=="],
 
     "@tarojs/vite-runner/@tarojs/helper": ["@tarojs/helper@4.2.0", "", { "dependencies": { "@babel/core": "^7.24.4", "@babel/generator": "^7.24.4", "@babel/parser": "^7.24.4", "@babel/traverse": "^7.24.1", "@babel/types": "^7.24.0", "@swc/core": "1.3.96", "@swc/register": "0.1.10", "ansi-escapes": "^4.3.2", "chalk": "^4.1.2", "chokidar": "^3.6.0", "cross-spawn": "^7.0.3", "debug": "^4.3.4", "dotenv": "^16.4.5", "dotenv-expand": "^11.0.6", "esbuild": "~0.21.0", "find-yarn-workspace-root": "^2.0.0", "fs-extra": "^11.2.0", "lodash": "^4.17.21", "require-from-string": "^2.0.2", "resolve": "^1.22.8", "supports-hyperlinks": "^3.0.0" } }, "sha512-F8D5EbwS/d0Kkh4PWFHhXoM1l1Iy2ZxjsWmXEkUratiq+CktogjQDa87pY+lyPLFsArA8oAd01p7rsQmVSDfoA=="],
+
+    "@tarojs/vite-runner/@tarojs/runtime": ["@tarojs/runtime@4.2.0", "", { "dependencies": { "@tarojs/shared": "4.2.0", "tslib": "^2.6.2" } }, "sha512-PztaDI5DfOCIYPn0/VeoZgtsKpE1Z/pXjrlB5w+9gZfM6bZZeS0j/GRdfHBz/BdmHMFYmQ+2HbZJ+sVj5DIUzA=="],
 
     "@types/babel__core/@babel/parser": ["@babel/parser@7.29.2", "", { "dependencies": { "@babel/types": "^7.29.0" }, "bin": "./bin/babel-parser.js" }, "sha512-4GgRzy/+fsBa72/RZVJmGKPmZu9Byn8o4MoLpmNe1m8ZfYnz5emHLQz3U4gLud6Zwl0RZIcgiLD7Uq7ySFuDLA=="],
 
@@ -5280,8 +5276,6 @@
     "@tailwindcss/vite/vite/postcss": ["postcss@8.5.15", "", { "dependencies": { "nanoid": "^3.3.12", "picocolors": "^1.1.1", "source-map-js": "^1.2.1" } }, "sha512-FfR8sjd4em2T6fb3I2MwAJU7HWVMr9zba+enmQeeWFfCbm+UOC/0X4DS8XtpUTMwWMGbjKYP7xjfNekzyGmB3A=="],
 
     "@tarojs/components-react/@tarojs/taro/@tarojs/api": ["@tarojs/api@4.2.1", "", { "peerDependencies": { "@tarojs/runtime": "4.2.1", "@tarojs/shared": "4.2.1" } }, "sha512-GlgqH/mx0EC+tYrcUnqa7vsGSOaAzIJNxvDcUESO6FiKb1xLESGmgGbaiEkqw29Nx/3j3lEXjHrCHJUdGy3X2Q=="],
-
-    "@tarojs/components-react/@tarojs/taro/@tarojs/runtime": ["@tarojs/runtime@4.2.1", "", { "dependencies": { "@tarojs/shared": "4.2.1", "tslib": "^2.6.2" } }, "sha512-7PgK9ohtmkTkY1zINx8hTQ8pe/1Ees8bYYkcb5w/pP+MnJt27xpKli3Tyeq6+wKwAHL58om+MizCz215SXoVcw=="],
 
     "@tarojs/components/@tarojs/taro/@tarojs/api": ["@tarojs/api@4.2.1", "", { "peerDependencies": { "@tarojs/runtime": "4.2.1", "@tarojs/shared": "4.2.1" } }, "sha512-GlgqH/mx0EC+tYrcUnqa7vsGSOaAzIJNxvDcUESO6FiKb1xLESGmgGbaiEkqw29Nx/3j3lEXjHrCHJUdGy3X2Q=="],
 
