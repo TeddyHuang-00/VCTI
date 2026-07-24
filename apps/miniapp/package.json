@@ -22,8 +22,8 @@
     "@tarojs/taro": "4.2.1",
     "@vcti/shared": "workspace:*",
     "qrcode": "1.5.4",
-    "react": "19.2.7",
-    "react-dom": "19.2.7"
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
   },
   "devDependencies": {
     "@babel/plugin-proposal-decorators": "7.29.7",
