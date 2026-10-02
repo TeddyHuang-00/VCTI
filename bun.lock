@@ -16,7 +16,7 @@
         "@tarojs/plugin-framework-react": "4.3.0",
         "@tarojs/plugin-platform-h5": "4.3.0",
         "@tarojs/plugin-platform-weapp": "4.3.0",
-        "@tarojs/react": "4.2.1",
+        "@tarojs/react": "4.3.0",
         "@tarojs/runtime": "4.2.1",
         "@tarojs/shared": "4.2.1",
         "@tarojs/taro": "4.2.1",
@@ -987,7 +987,7 @@
 
     "@tarojs/plugin-platform-weapp": ["@tarojs/plugin-platform-weapp@4.3.0", "", { "peerDependencies": { "@tarojs/service": "4.3.0", "@tarojs/shared": "4.3.0" } }, "sha512-bXJmnq3/FET3SIAHINuKOnkzAcjgc2coIr1LEfp8kRb5x3NBU7MR6TBzNhCIcWrD/G/oQXQ/Y8y7FaA51hVBeg=="],
 
-    "@tarojs/react": ["@tarojs/react@4.2.1", "", { "dependencies": { "@tarojs/runtime": "4.2.1", "@tarojs/shared": "4.2.1", "react-reconciler": "0.29.0" }, "peerDependencies": { "react": "^18" } }, "sha512-yov61UztNQvqzrG8O6dG/SljWk2cGUTFq3vMjrKVeNoww57zAawKhhDK24Mlca1dB+5PwBUSwW2vrFVxUIadUQ=="],
+    "@tarojs/react": ["@tarojs/react@4.3.0", "", { "dependencies": { "@tarojs/runtime": "4.3.0", "@tarojs/shared": "4.3.0", "react-reconciler": "0.29.0" }, "peerDependencies": { "react": "^18" } }, "sha512-OnAOdI/mhxTyKhCeV0EiA6c4tPw/KmxMR8qLtHiJ8g3QyOEN4huTC8rwhiSkvy42VmRo+xHsoJMjGylsT+uSKw=="],
 
     "@tarojs/router": ["@tarojs/router@4.3.0", "", { "dependencies": { "dingtalk-jsapi": "~2.15.2", "history": "^5.3.0", "mobile-detect": "^1.4.2", "query-string": "^9.0.0", "tslib": "^2.6.2", "universal-router": "^9.2.0" }, "peerDependencies": { "@tarojs/runtime": "4.3.0", "@tarojs/shared": "4.3.0", "@tarojs/taro": "4.3.0" } }, "sha512-CqQI+HcNs4flWPWVJ/8Ln13Cy8+px408FRFkyTaxxmgwkLwS1oUKAOiATOHsa8XQHeUKiqY4MtMsOJIu1lOOuA=="],
 
@@ -3758,6 +3758,10 @@
     "@tarojs/plugin-platform-h5/babel-plugin-transform-taroapi": ["babel-plugin-transform-taroapi@4.3.0", "", { "dependencies": { "lodash": "^4.17.21" }, "peerDependencies": { "@babel/core": "^7.0.0" } }, "sha512-MKoy1TuG5xBwsCnkKVr6wT94lhE6PWNsE6c5hyg+No4HMqKpf8geD4nqaq/Zo/J6pce21/g+aoQSpAZ8aD/5Lg=="],
 
     "@tarojs/plugin-platform-weapp/@tarojs/shared": ["@tarojs/shared@4.3.0", "", {}, "sha512-vHtsm/L+Nk5J97jXibt4hXtWd7J9ZMLjYhyUlIZuPjeTmp+pwQ7846u68gnluMuYRvMdChqC69o1wNC1bmIqig=="],
+
+    "@tarojs/react/@tarojs/runtime": ["@tarojs/runtime@4.3.0", "", { "dependencies": { "@tarojs/shared": "4.3.0", "tslib": "^2.6.2" } }, "sha512-rhxlQHVOLwCOqjeinUdEW/GZsiuys44s4SMRrOy9WqC+OBzdNBcC+h+nYCX3JLcAq/pTSLma1Oed19BF3G4PhQ=="],
+
+    "@tarojs/react/@tarojs/shared": ["@tarojs/shared@4.3.0", "", {}, "sha512-vHtsm/L+Nk5J97jXibt4hXtWd7J9ZMLjYhyUlIZuPjeTmp+pwQ7846u68gnluMuYRvMdChqC69o1wNC1bmIqig=="],
 
     "@tarojs/react/react": ["react@18.3.1", "", { "dependencies": { "loose-envify": "^1.1.0" } }, "sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ=="],
 
