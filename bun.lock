@@ -28,7 +28,7 @@
       "devDependencies": {
         "@babel/plugin-proposal-decorators": "7.29.7",
         "@babel/plugin-transform-class-properties": "7.29.7",
-        "@babel/runtime": "7.29.7",
+        "@babel/runtime": "7.29.10",
         "@tarojs/cli": "4.3.0",
         "@tarojs/vite-runner": "4.3.0",
         "@types/react": "19.3.0",
@@ -411,7 +411,7 @@
 
     "@babel/regjsgen": ["@babel/regjsgen@0.8.0", "", {}, "sha512-x/rqGMdzj+fWZvCOYForTghzbtqPDZ5gPwaoNGHdgDfF2QA/XZbCBp4Moo5scrkAMPhB7z26XM/AaHuIJdgauA=="],
 
-    "@babel/runtime": ["@babel/runtime@7.29.7", "", {}, "sha512-Nq8OhGWiZIZGV6hLHoyAKLLcJihP/xFeBMGJoUrxTX2psI8dCifzLhZISFb+VWS3wFMRDmCGw5R+dOySCqPLhw=="],
+    "@babel/runtime": ["@babel/runtime@7.29.10", "", {}, "sha512-NpugTzbKgGrNe45Ui32cN8vCFFMxVtP/9rtfwv0nP5FRDAjvYBxJcLVpYA9mr1jxP6cnIT7x9LUzuDTbWYYNRA=="],
 
     "@babel/template": ["@babel/template@7.24.6", "", { "dependencies": { "@babel/code-frame": "^7.24.6", "@babel/parser": "^7.24.6", "@babel/types": "^7.24.6" } }, "sha512-3vgazJlLwNXi9jhrR1ef8qiB65L1RK90+lEQwv4OxveHnqC3BfmnHdgySwRLzf6akhlOYenT+b7AfWq+a//AHw=="],
 
