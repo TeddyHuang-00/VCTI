@@ -20,7 +20,7 @@
     "qrcode": "1.5.4",
     "react": "19.3.0",
     "react-dom": "19.3.0",
-    "satori": "0.35.0"
+    "satori": "0.35.1"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.10",
