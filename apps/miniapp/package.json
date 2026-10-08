@@ -33,7 +33,7 @@
     "@tarojs/vite-runner": "4.3.0",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
-    "@vitejs/plugin-react": "4.7.0",
+    "@vitejs/plugin-react": "6.1.2",
     "miniprogram-ci": "2.1.48",
     "sass-embedded": "1.105.1",
     "sharp": "^0.35.0",
