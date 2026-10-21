@@ -13,17 +13,17 @@
     "validate": "bun run check && bun run lint"
   },
   "dependencies": {
-    "@astrojs/react": "7.1.0",
+    "@astrojs/react": "7.1.1",
     "@resvg/resvg-wasm": "2.6.2",
     "@vcti/shared": "workspace:*",
-    "astro": "7.4.1",
+    "astro": "7.4.2",
     "qrcode": "1.5.4",
     "react": "19.3.1",
     "react-dom": "19.3.1",
     "satori": "0.36.0"
   },
   "devDependencies": {
-    "@astrojs/check": "0.9.11",
+    "@astrojs/check": "0.9.12",
     "@biomejs/biome": "2.5.15",
     "@playform/compress": "0.2.5",
     "@tailwindcss/vite": "4.3.3",
