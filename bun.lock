@@ -16,7 +16,7 @@
         "@tarojs/plugin-framework-react": "4.3.2",
         "@tarojs/plugin-platform-h5": "4.3.2",
         "@tarojs/plugin-platform-weapp": "4.3.2",
-        "@tarojs/react": "4.3.1",
+        "@tarojs/react": "4.3.2",
         "@tarojs/runtime": "4.3.1",
         "@tarojs/shared": "4.3.1",
         "@tarojs/taro": "4.3.1",
@@ -987,7 +987,7 @@
 
     "@tarojs/plugin-platform-weapp": ["@tarojs/plugin-platform-weapp@4.3.2", "", { "peerDependencies": { "@tarojs/service": "4.3.2", "@tarojs/shared": "4.3.2" } }, "sha512-o7UvLaJyURtrylUVhdN8XpFt4dj903CP4ycsXnLuAxPPStuC3QqVwfb2jtz25KTyENokGlJB6/Nk3YRM3iCgjg=="],
 
-    "@tarojs/react": ["@tarojs/react@4.3.1", "", { "dependencies": { "@tarojs/runtime": "4.3.1", "@tarojs/shared": "4.3.1", "react-reconciler": "0.29.0" }, "peerDependencies": { "react": "^18" } }, "sha512-v2DSh3Ei0VUPZ7ZRCNvrRk8Cs/TWcHov2XBoAGHql7GGpNGIuVvtMz8I4iGLoKO7pb+Hacaekl6KtbRjPCKZng=="],
+    "@tarojs/react": ["@tarojs/react@4.3.2", "", { "dependencies": { "@tarojs/runtime": "4.3.2", "@tarojs/shared": "4.3.2", "react-reconciler": "0.29.0" }, "peerDependencies": { "react": "^18" } }, "sha512-tgZY0CFgJhph1atNA6PgjoAA+wgNigCuDkFgZU4KsU+O90ZV7nKr0Pfd+EcjFzdVYaYT4R2kGO7pUOeguCpziw=="],
 
     "@tarojs/runner-utils": ["@tarojs/runner-utils@4.3.1", "", { "dependencies": { "@tarojs/helper": "4.3.1", "rollup": "^3.29.4", "scss-bundle": "^3.1.2" } }, "sha512-JwsmYuOYYyf9FpsQeU2vcgzpGBbNzIBV0bqGVyTX2NLyk9FvlRp7jZt6H2ITw+h+aDcsljzrehZD9wL+RM4hxA=="],
 
@@ -3756,6 +3756,10 @@
     "@tarojs/plugin-platform-h5/babel-plugin-transform-taroapi": ["babel-plugin-transform-taroapi@4.3.2", "", { "dependencies": { "lodash": "^4.17.21" }, "peerDependencies": { "@babel/core": "^7.0.0" } }, "sha512-NMp0zlxmXaS6Mzdiyvsqxk1/JxOUWQenm2c09d34b5404vcw5seuuyvZVXb7mjXVREa/iVuLK817YsEHYY2xsg=="],
 
     "@tarojs/plugin-platform-weapp/@tarojs/shared": ["@tarojs/shared@4.3.2", "", {}, "sha512-Qt6mMaDfmom7tzY0g3vu2kbArt6ZzzeX9wS13J59iYxWIQw/JZiC0aJsYJuF8gj44AcU3PsiRalWcz8Ov3Y+Cg=="],
+
+    "@tarojs/react/@tarojs/runtime": ["@tarojs/runtime@4.3.2", "", { "dependencies": { "@tarojs/shared": "4.3.2", "tslib": "^2.6.2" } }, "sha512-T5M4W10cIaTU+fOHT6fF+W7Hjfzm8+OywSoZztPVlH556F7hsSI2TUxqgjDrX+R1kHSN7zBtHl5uAc7DP0jHPw=="],
+
+    "@tarojs/react/@tarojs/shared": ["@tarojs/shared@4.3.2", "", {}, "sha512-Qt6mMaDfmom7tzY0g3vu2kbArt6ZzzeX9wS13J59iYxWIQw/JZiC0aJsYJuF8gj44AcU3PsiRalWcz8Ov3Y+Cg=="],
 
     "@tarojs/react/react": ["react@18.3.1", "", { "dependencies": { "loose-envify": "^1.1.0" } }, "sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ=="],
 
