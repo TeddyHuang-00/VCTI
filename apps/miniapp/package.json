@@ -19,7 +19,7 @@
     "@tarojs/react": "4.3.3",
     "@tarojs/runtime": "4.3.3",
     "@tarojs/shared": "4.3.2",
-    "@tarojs/taro": "4.3.2",
+    "@tarojs/taro": "4.3.3",
     "@vcti/shared": "workspace:*",
     "qrcode": "1.5.4",
     "react": "19.3.1",
